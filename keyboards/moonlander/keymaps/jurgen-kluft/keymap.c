@@ -325,53 +325,35 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
     update_oneshot(&os_cmd_state, KC_LCMD, OS_CMD, keycode, record);
 #endif
 
-    switch (keycode)
+    if (record->event.pressed)
     {
-        case KC_QWERTY:
-            if (record->event.pressed)
-            {
+        switch (keycode)
+        {
+            case KC_QWERTY:
                 set_single_persistent_default_layer(_QWERTY);
-            }
-            break;
-        case KC_QWERTY_MOD:
-            if (record->event.pressed)
-            {
+                break;
+            case KC_QWERTY_MOD:
                 set_single_persistent_default_layer(_QWERTY_MOD);
-            }
-            break;
-        case KC_RSTHD:
-            if (record->event.pressed)
-            {
+                break;
+            case KC_RSTHD:
                 set_single_persistent_default_layer(_RSTHD);
-            }
-            break;
-        case KC_RSTHD_MOD:
-            if (record->event.pressed)
-            {
+                break;
+            case KC_RSTHD_MOD:
                 set_single_persistent_default_layer(_RSTHD_MOD);
-            }
-            break;
-        case KC_SMART_NUMBER:
-            if (record->event.pressed)
-            {
+                break;
+            case KC_SMART_NUMBER:
                 smart_feature_toggle(SMART_NUMBERS, _SMART_NUM);
-            }
-            break;
-        case KC_SMART_CAPSLOCK:
-            if (record->event.pressed)
-            {
+                break;
+            case KC_SMART_CAPSLOCK:
                 uint8_t layer = _QWERTY_CAPS;
                 if ((default_layer_state & ((1 << _RSTHD) | (1 << _RSTHD_MOD))) != 0)
                     layer = _RSTHD_CAPS;
                 smart_feature_toggle(SMART_CAPSLOCK, layer);
-            }
-            break;
-        case RGB_SLD:
-            if (record->event.pressed)
-            {
+                break;
+            case RGB_SLD:
                 rgblight_mode(1);
-            }
-            return false;
+                return false;
+        }
     }
 
     return true;

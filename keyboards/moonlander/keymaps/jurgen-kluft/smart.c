@@ -3,29 +3,27 @@
 #include "layers.h"
 
 // ----------------------------------------------------------------------------------------------------
+
 static uint8_t g_smart_status = 0;
-
-bool           smart_feature_state(uint8_t f) { return (g_smart_status & (0xF << f)) != 0; }
-void           smart_feature_disable(uint8_t f)
-{
-    uint8_t layer = (g_smart_status >> f) & 0xF;
+bool smart_feature_state(uint8_t f) { return (g_smart_status & (0xF << f)) != 0; }
+void smart_feature_disable(uint8_t f) {
+  uint8_t layer = (g_smart_status>>f) & 0xF;
+  if (layer > 0)
+  {
     g_smart_status &= ~(0xF << f);
-    if (layer > 0)
-        layer_off(layer);
+    layer_off(layer);
+  }
 }
 
-void smart_feature_toggle(uint8_t f, uint8_t layer)
-{
-    if (!smart_feature_state(f))
-    {
-        g_smart_status = g_smart_status | (layer << f);
-        layer_on(layer);
-    }
-    else
-    {
-        smart_feature_disable(f);
-    }
+void smart_feature_toggle(uint8_t f, uint8_t layer) { 
+  if (!smart_feature_state(f)) {
+    g_smart_status = g_smart_status | (layer << f);
+    layer_on(layer);
+  } else {
+    smart_feature_disable(f);
+  }
 }
+
 
 // ----------------------------------------------------------------------------------------------------
 // smart capslock
@@ -33,79 +31,70 @@ void smart_feature_toggle(uint8_t f, uint8_t layer)
 #define SKC_A S(KC_A)
 #define SKC_Z S(KC_Z)
 
-bool smart_capslock_process(uint16_t keycode, keyrecord_t* record)
-{
-    if (smart_feature_state(SMART_CAPSLOCK))
-    {
-        switch (keycode)
-        {
-            case KC_SCLN: keycode = KC_UNDS;
-            case SKC_A ... SKC_Z:
-            case KC_BSPC:
-            case KC_DEL:
-            case KC_UNDS:
-            case KC_MINS:
-                if (record->event.pressed && (get_mods() != 0))
-                {
-                    keycode = KC_NO;
-                }
-                break;
-            default:
-                if (record->event.pressed)
-                {
-                    keycode = KC_NO;
-                }
-        }
+bool smart_capslock_process(uint16_t keycode, keyrecord_t *record) {
 
-        if (keycode == KC_NO)
-        {
-            smart_feature_disable(SMART_CAPSLOCK);
+  if (smart_feature_state(SMART_CAPSLOCK)) {
+
+    switch (keycode) {
+      case KC_SCLN: keycode = KC_UNDS;
+      case SKC_A ... SKC_Z:
+      case KC_BSPC:
+      case KC_DEL:
+      case KC_UNDS:
+      case KC_MINS:
+        if (record->event.pressed && (get_mods() != 0)) {
+          keycode = KC_NO;
+        }
+        break;
+      default:
+        if (record->event.pressed) {
+          keycode = KC_NO;
         }
     }
-    return true;
+
+    if (keycode == KC_NO) {
+      smart_feature_disable(SMART_CAPSLOCK);
+    }
+  }
+  return true;
 }
+
 
 // ----------------------------------------------------------------------------------------------------
 // smart numbers
 
-bool smart_numbers_process(uint16_t keycode, keyrecord_t* record)
-{
-    if (smart_feature_state(SMART_NUMBERS))
-    {
-        switch (keycode)
-        {
-            case KC_1 ... KC_0:
-            case KC_RBRACKET:
-            case KC_LBRACKET:
-            case KC_LPRN:
-            case KC_RPRN:
-            case KC_BSPC:
-            case KC_DEL:
-            case KC_UNDS:
-            case KC_MINS:
-            case KC_PLUS:
-            case KC_ASTR:
-            case KC_EQL:
-            case KC_SLSH:
-            case KC_DOT:
-                if (record->event.pressed && (get_mods() != 0))
-                {
-                    keycode = KC_NO;
-                }
-                break;
-            default:
-                if (record->event.pressed)
-                {
-                    keycode = KC_NO;
-                }
-                break;
-        }
+bool smart_numbers_process(uint16_t keycode, keyrecord_t *record) {
 
-        if (keycode == KC_NO)
-        {
-            smart_feature_disable(SMART_NUMBERS);
-        }
+  if (smart_feature_state(SMART_NUMBERS)) {
+
+    switch (keycode) {
+      case KC_1...KC_0:
+      case KC_RBRACKET:
+      case KC_LBRACKET:
+      case KC_LPRN:
+      case KC_RPRN:
+      case KC_BSPC:
+      case KC_DEL:
+      case KC_UNDS:
+      case KC_MINS:
+      case KC_PLUS:
+      case KC_ASTR:
+      case KC_EQL:
+      case KC_SLSH:
+      case KC_DOT:
+      case KC_COMMA:
+        break;
+      default:
+          if (record->event.pressed) {
+              keycode = KC_NO;        
+          }
+          break;
     }
 
-    return true;
+    if (keycode == KC_NO) {
+      smart_feature_disable(SMART_NUMBERS);
+    }
+  }
+  
+  return true;
 }
