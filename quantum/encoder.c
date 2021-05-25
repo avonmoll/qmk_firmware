@@ -45,6 +45,7 @@ static uint8_t encoder_resolutions[] = ENCODER_RESOLUTIONS;
 #    define ENCODER_CLOCKWISE false
 #    define ENCODER_COUNTER_CLOCKWISE true
 #endif
+static int8_t encoder_LUT[] = {0, -1, 1, 0, 1, 0, 0, -1};
 
 static uint8_t encoder_state[NUMBER_OF_ENCODERS]  = {0};
 static int8_t  encoder_pulses[NUMBER_OF_ENCODERS] = {0};
@@ -93,19 +94,9 @@ void encoder_init(void) {
 }
 
 static uint8_t encoder_update(int8_t index, uint8_t state) {
-    if (state & 8) {
-        state = state ^ 7;
-    }
-    state = state & 7;
-    //static int8_t encoder_LUT[] = {0, -1, 1, 0, 1, 0, 0, -1, <-- mirror --> -1, 0, 0, 1, 0, 1, -1, 0};
-
-    int8_t pulse;
-    switch (state) {
-        case 1: 
-        case 7: pulse = -1; break;
-        case 2: 
-        case 4: pulse = 1; break;
-        default: return 0;
+    state = state & 0xF;
+    if (state & 0x8) {
+        state = state ^ 0xF;
     }
 
     uint8_t i  = index;
@@ -118,24 +109,22 @@ static uint8_t encoder_update(int8_t index, uint8_t state) {
 
 #ifdef SPLIT_KEYBOARD
     index += thisHand;
-#endif  
+#endif
+
+    int8_t pulse = encoder_LUT[state];
     encoder_pulses[i] += pulse;
     if (encoder_pulses[i] >= resolution) {
         encoder_pulses[i] -= resolution;
-        encoder_update_kb(index, ENCODER_CLOCKWISE);
-    }
-    else if (encoder_pulses[i] <= -resolution) {  // direction is arbitrary here, but this clockwise
-        encoder_pulses[i] += resolution;
         encoder_update_kb(index, ENCODER_COUNTER_CLOCKWISE);
+    }
+    else if (encoder_pulses[i] <= -resolution) {
+        encoder_pulses[i] += resolution;
+        encoder_update_kb(index, ENCODER_CLOCKWISE);
     } else {
         return 0;
     }
-    
-#ifndef ENCODER_DIRECTION_FLIP
-    encoder_value[index] -= pulse;
-#else
+
     encoder_value[index] += pulse;
-#endif
     return 1;
 }
 
@@ -161,12 +150,14 @@ void encoder_update_raw(uint8_t* slave_state) {
     uint8_t index = thatHand;
     for (uint8_t i = 0; i < NUMBER_OF_ENCODERS; i++, index++) {
         int8_t  delta = slave_state[i] - encoder_value[index];
-        bool    cw    = ENCODER_COUNTER_CLOCKWISE;
+        bool    cw;
         changed |= delta;
         if (delta < 0) {
             delta = -delta;
             cw = ENCODER_CLOCKWISE;
-        } 
+        } else {
+            cw = ENCODER_COUNTER_CLOCKWISE;
+        }
         while (delta > 0) {
             delta--;
             encoder_update_kb(index, cw);
