@@ -496,8 +496,16 @@ void encoder_update_user(uint8_t index, bool clockwise) {
             " // "
         ],
         "vizsymbols": {
+            "TG(_MOUS)", "MOUSE",
+            "TG(_SYSTEM)", " SYS ",
+            "MO(_NAV)", "NAVI ",
+            "MO(_FNC)", "FUNC ",
+            "MO(_SYM)", " SYM ",
+            "TG(_QWERTY_CAPS)": "CAPS ",
+            "TG(_RSTHD_CAPS)": "CAPS ",
             "KC_SMART_NUMBER": "SMNUM",
             "KC_SMART_CAPSLOCK": "SMCAP",
+            "OSM(MOD_LSFT)": "SHIFT",
             "_______": "     ",
             "KC_TRANS": "     ",
             "KC_0": "  0  " ,
