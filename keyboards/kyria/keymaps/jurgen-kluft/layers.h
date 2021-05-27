@@ -11,6 +11,5 @@ enum layers {
     _NUM,
     _NAV,
     _FNC,
-    _MOUS,
-    _SYSTEM
+    _MOUS
 };

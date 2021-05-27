@@ -184,11 +184,6 @@ void render_keylock_status(uint8_t led_usb_state) {
                 oled_write_P(PSTR("-MOUS "), false);
                 count += 1;
             }
-            else if (layer == _SYSTEM)
-            {
-                oled_write_P(PSTR("-SYS  "), false);
-                count += 1;
-            }
         }
         layers = layers >> 1;
         if (count == 3)

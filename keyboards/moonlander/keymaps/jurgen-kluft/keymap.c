@@ -345,10 +345,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
                 smart_feature_toggle(SMART_NUMBERS, _SMART_NUM);
                 break;
             case KC_SMART_CAPSLOCK:
-                uint8_t layer = _QWERTY_CAPS;
                 if ((default_layer_state & ((1 << _RSTHD) | (1 << _RSTHD_MOD))) != 0)
-                    layer = _RSTHD_CAPS;
-                smart_feature_toggle(SMART_CAPSLOCK, layer);
+                    smart_feature_toggle(SMART_CAPSLOCK, _RSTHD_CAPS);
+                else
+                    smart_feature_toggle(SMART_CAPSLOCK, _QWERTY_CAPS);
                 break;
             case RGB_SLD:
                 rgblight_mode(1);
