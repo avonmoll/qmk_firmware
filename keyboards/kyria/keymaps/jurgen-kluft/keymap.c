@@ -97,13 +97,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     TG(_QWERTY_CAPS), KC_Q, KC_W, KC_E,      KC_R,            KC_T,                                                                 KC_Y,     KC_U,     KC_I,        KC_O,   KC_P,     TG(_QWERTY_CAPS), 
     OSM(MOD_LSFT),    KC_A, KC_S, KC_D,      KC_F,            KC_G,                                                                 KC_H,     KC_J,     KC_K,        KC_L,   KC_SCLN,  KC_TRANS,         
     KC_TRANS,         KC_Z, KC_X, KC_C,      KC_V,            KC_B,     KC_BSPACE, KC_SMART_NUMBER,   KC_SMART_CAPSLOCK, KC_BSPACE, KC_N,     KC_M,     KC_COMMA,    KC_DOT, KC_SLASH, KC_RSTHD,         
-                                  TG(_MOUS), KC_SMART_NUMBER, MO(_NAV), KC_SPACE,  MO(_NUM),          KC_SMART_CAPSLOCK, KC_BSPACE, MO(_SYM), MO(_FNC), TG(_SYSTEM)                                      
+                                  TG(_MOUS), KC_SMART_NUMBER, MO(_NAV), KC_SPACE,  MO(_NUM),          KC_SMART_CAPSLOCK, KC_BSPACE, MO(_SYM), MO(_FNC), TG(_MOUS)                                      
   ),
   [_RSTHD] = LAYOUT(
     TG(_RSTHD_CAPS), KC_J,    KC_C, KC_Y,      KC_F,            KC_K,                                                                 KC_Z,     KC_L,     KC_COMMA,    KC_U,    KC_Q,     TG(_RSTHD_CAPS), 
     OSM(MOD_LSFT),   KC_R,    KC_S, KC_T,      KC_H,            KC_D,                                                                 KC_M,     KC_N,     KC_A,        KC_I,    KC_O,     KC_TRANS,        
     KC_TRANS,        KC_SCLN, KC_V, KC_G,      KC_P,            KC_B,     KC_BSPACE, KC_SMART_NUMBER,   KC_SMART_CAPSLOCK, KC_BSPACE, KC_X,     KC_W,     KC_DOT,      KC_SCLN, KC_SLASH, KC_QWERTY,       
-                                    TG(_MOUS), KC_SMART_NUMBER, MO(_NAV), KC_SPACE,  KC_BSPACE,         KC_SMART_CAPSLOCK, KC_E,      MO(_SYM), MO(_FNC), TG(_SYSTEM)                                      
+                                    TG(_MOUS), KC_SMART_NUMBER, MO(_NAV), KC_SPACE,  KC_BSPACE,         KC_SMART_CAPSLOCK, KC_E,      MO(_SYM), MO(_FNC), TG(_MOUS)                                      
   ),
   [_QWERTY_CAPS] = LAYOUT(
     KC_TRANS, LSFT(KC_Q), LSFT(KC_W), LSFT(KC_E), LSFT(KC_R), LSFT(KC_T),                                           LSFT(KC_Y), LSFT(KC_U), LSFT(KC_I),     LSFT(KC_O),   LSFT(KC_P), KC_TRANS, 
@@ -149,16 +149,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                               KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS                                
   ),
   [_MOUS] = LAYOUT(
-    KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS,                                           KC_MS_WH_UP,   KC_MS_BTN1,    KC_MS_UP,   KC_MS_BTN2,     KC_TRANS, KC_TRANS, 
-    KC_TRANS, KC_LGUI,  KC_LALT,  KC_LCTL,  KC_LSFT,  KC_TRANS,                                           KC_MS_WH_DOWN, KC_MS_LEFT,    KC_MS_DOWN, KC_MS_RIGHT,    KC_TRANS, KC_TRANS, 
-    KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS,      KC_MS_WH_LEFT, KC_MS_BTN3, KC_MS_WH_RIGHT, KC_TRANS, KC_TRANS, 
-                                  KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, TO(0),         KC_TRANS,      KC_TRANS                                        
-  ),
-  [_SYSTEM] = LAYOUT(
-    KC_TRANS, KC_TRANS, KC_TRANS, MU_TOG,   MU_MOD,   LGUI(KC_EQUAL),                                           KC_QWERTY, KC_TRANS, RGB_SAI,  RGB_HUI,  RGB_VAI,  KC_OLED,  
-    KC_TRANS, KC_LGUI,  KC_LALT,  KC_LCTL,  KC_LSFT,  LGUI(KC_MINUS),                                           KC_RSTHD,  KC_MPLY,  RGB_SAD,  RGB_HUD,  RGB_VAD,  KC_TRANS, 
-    KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS,       KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS,  KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, 
-                                  KC_TRANS, KC_TRANS, KC_TRANS,       KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS,  KC_TRANS, KC_TRANS                                
+    MU_MOD,   KC_MPLY,  MU_TOG,   KC_TRANS, KC_TRANS, KC_OLED,                                            KC_MS_WH_UP,   KC_MS_BTN1,    KC_MS_UP,   KC_MS_BTN2,     RGB_SAI, RGB_SAD, 
+    MU_TOG,   KC_LGUI,  KC_LALT,  KC_LCTL,  KC_LSFT,  KC_TRANS,                                           KC_MS_WH_DOWN, KC_MS_LEFT,    KC_MS_DOWN, KC_MS_RIGHT,    RGB_HUI, RGB_HUD, 
+    KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS,      KC_MS_WH_LEFT, KC_MS_BTN3, KC_MS_WH_RIGHT, RGB_VAI, RGB_VAD, 
+                                  KC_TRANS, KC_TRANS, KC_TRANS, KC_PDT,   KC_NDT,     KC_TRANS, KC_TRANS, TO(0),         KC_TRANS,      KC_TRANS                                        
   )
 };
 // clang-format on
@@ -301,7 +295,7 @@ void encoder_update_user(uint8_t index, bool clockwise) {
           tap_code(KC_MS_WH_DOWN);
         }
         break;
-      case _SYSTEM: // Underglow color
+      case _MOUS: // Underglow color
         if (clockwise) {
           rgblight_increase_hue();
         } else {
@@ -325,7 +319,7 @@ void encoder_update_user(uint8_t index, bool clockwise) {
           tap_code16(KC_REDO);
         }
         break;
-      case _SYSTEM: // Underglow brightness
+      case _MOUS: // Underglow brightness
         if (clockwise) {
           rgblight_increase_val();
         } else {
