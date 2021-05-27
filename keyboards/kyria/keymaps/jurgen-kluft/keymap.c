@@ -97,7 +97,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     TG(_QWERTY_CAPS), KC_Q, KC_W, KC_E,      KC_R,            KC_T,                                                                 KC_Y,     KC_U,     KC_I,        KC_O,   KC_P,     TG(_QWERTY_CAPS), 
     OSM(MOD_LSFT),    KC_A, KC_S, KC_D,      KC_F,            KC_G,                                                                 KC_H,     KC_J,     KC_K,        KC_L,   KC_SCLN,  KC_TRANS,         
     KC_TRANS,         KC_Z, KC_X, KC_C,      KC_V,            KC_B,     KC_BSPACE, KC_SMART_NUMBER,   KC_SMART_CAPSLOCK, KC_BSPACE, KC_N,     KC_M,     KC_COMMA,    KC_DOT, KC_SLASH, KC_RSTHD,         
-                                  TG(_MOUS), KC_SMART_NUMBER, MO(_NAV), KC_SPACE,  MO(_NUM),          KC_SMART_CAPSLOCK, KC_BSPACE, MO(_SYM), MO(_FNC), TG(_SYSTEM)                                      
+                                  TG(_MOUS), KC_SMART_NUMBER, MO(_NAV), KC_SPACE,  KC_BSPACE,         KC_SMART_CAPSLOCK, KC_BSPACE, MO(_SYM), MO(_FNC), TG(_SYSTEM)                                      
   ),
   [_RSTHD] = LAYOUT(
     TG(_RSTHD_CAPS), KC_J,    KC_C, KC_Y,      KC_F,            KC_K,                                                                 KC_Z,     KC_L,     KC_COMMA,    KC_U,    KC_Q,     TG(_RSTHD_CAPS), 
@@ -120,7 +120,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_SMART_NUM] = LAYOUT(
     KC_TRANS, KC_TRANS, KC_TRANS, KC_LBRACKET, KC_RBRACKET, KC_SLASH,                                           KC_MINUS, KC_LPRN,  KC_RPRN,  KC_TRANS, KC_TRANS, KC_TRANS, 
     KC_TRANS, KC_5,     KC_6,     KC_7,        KC_8,        KC_ASTR,                                            KC_PLUS,  KC_1,     KC_2,     KC_3,     KC_4,     KC_TRANS, 
-    KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS,    KC_9,        KC_EQUAL, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_EQUAL, KC_0,     KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, 
+    KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS,    KC_9,        KC_EQUAL, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_EQUAL, KC_0,     KC_COMMA, KC_DOT,   KC_TRANS, KC_TRANS, 
                                   KC_TRANS,    KC_TRANS,    KC_TRANS, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS                                
   ),
   // Symbols in order of frequency # | & { } , ? [ ] _ < > $ % ` ' / - 0 : \ 1 ( ) = ^ ~ " 6 7 8 ! . 9 + @ * 2 3 4 5 
