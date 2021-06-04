@@ -17,16 +17,8 @@ bool is_oneshot_hold(oneshot_state state)
 
 void toggle_oneshot_hold(oneshot_state* state)
 {
-    if (is_oneshot_hold(*state))
-    {
-        *state = (*state & ~os_mode_mask);
-    }
-    else
-    {
-        *state = (*state | os_mode_hold);
-    }
+    *state = (*state ^ os_mode_hold);
 }
-
 
 void update_oneshot(oneshot_state* state, uint16_t mod, uint16_t trigger, uint16_t keycode, keyrecord_t* record)
 {
@@ -38,8 +30,8 @@ void update_oneshot(oneshot_state* state, uint16_t mod, uint16_t trigger, uint16
             if ((*state & os_state_mask) == os_up_unqueued)
             {
                 register_code(mod);
-                *state = (*state & ~os_state_mask) | os_down_unused;
             }
+            *state = *state | os_down_unused;
         }
         else
         {
@@ -50,16 +42,14 @@ void update_oneshot(oneshot_state* state, uint16_t mod, uint16_t trigger, uint16
                     // If we didn't use the mod while trigger was held, queue it.
                     *state = (*state & ~os_state_mask) | os_up_queued;
                     break;
+                case os_down_unused | os_up_queued:
+                    *state = (*state ^ os_down_unused);
+                    toggle_oneshot_hold(state); 
+                    break;
                 case os_down_used:
                     // If we did use the mod while trigger was held, unregister it.
-                    if (!is_oneshot_hold(*state))
-                    {
-                        *state = os_up_unqueued;
-                        unregister_code(mod);
-                    }
-                    break;
-                case os_up_queued:
-                    toggle_oneshot_hold(state); 
+                    *state = os_up_unqueued;
+                    unregister_code(mod);
                     break;
                 default: 
                     break;
@@ -84,20 +74,21 @@ void update_oneshot(oneshot_state* state, uint16_t mod, uint16_t trigger, uint16
         {
             if (!is_oneshot_ignored_key(keycode))
             {
-                if (!is_oneshot_hold(*state))
+                // On non-ignored keyup, consider the oneshot used.
+                switch (*state & os_state_mask)
                 {
-                    // On non-ignored keyup, consider the oneshot used.
-                    switch (*state & os_state_mask)
-                    {
-                        case os_down_unused: 
-                            *state = os_down_used;
-                            break;
-                        case os_up_queued:
+                    case os_down_unused: 
+                    case os_down_unused | os_up_queued: 
+                        *state = os_down_used;
+                        break;
+                    case os_up_queued:
+                        if (!is_oneshot_hold(*state))
+                        {
                             *state = os_up_unqueued;
                             unregister_code(mod);
-                            break;
-                        default: break;
-                    }
+                        }
+                        break;
+                    default: break;
                 }
             }
         }

@@ -9,10 +9,10 @@
 // Represents the four states a oneshot key can be in
 typedef enum
 {
-    os_up_unqueued = 0x01,
-    os_up_queued   = 0x02,
-    os_down_unused = 0x04,
-    os_down_used   = 0x08,
+    os_up_unqueued = 0x00,
+    os_up_queued   = 0x01,
+    os_down_unused = 0x02,
+    os_down_used   = 0x04,
     os_state_mask  = 0x0F,
     os_mode_none   = 0x00,
     os_mode_hold   = 0x80,
