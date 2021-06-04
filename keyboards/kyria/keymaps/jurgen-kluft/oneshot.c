@@ -19,7 +19,7 @@ void toggle_oneshot_hold(oneshot_state* state)
 {
     if (is_oneshot_hold(*state))
     {
-        *state = (*state & os_mode_mask);
+        *state = (*state & ~os_mode_mask);
     }
     else
     {
