@@ -49,30 +49,6 @@
 #define KC_LCBRACE LSFT(KC_LBRACKET)
 #define KC_RCBRACE LSFT(KC_RBRACKET)
 
-// QWERTY: Left-hand home row mods
-#define HOME_QA LGUI_T(KC_A)
-#define HOME_QS LALT_T(KC_S)
-#define HOME_QD LCTL_T(KC_D)
-#define HOME_QF LSFT_T(KC_F)
-
-// QWERTY: Right-hand home row mods
-#define HOME_QJ RSFT_T(KC_J)
-#define HOME_QK RCTL_T(KC_K)
-#define HOME_QL LALT_T(KC_L)
-#define HOME_QSCLN RGUI_T(KC_SCLN)
-
-// RSTHD: Left-hand home row mods
-#define HOME_RR LGUI_T(KC_R)
-#define HOME_RS LALT_T(KC_S)
-#define HOME_RT LCTL_T(KC_T)
-#define HOME_RH LSFT_T(KC_H)
-
-// RSTHD: Right-hand home row mods
-#define HOME_RN RSFT_T(KC_N)
-#define HOME_RA RCTL_T(KC_A)
-#define HOME_RI LALT_T(KC_I)
-#define HOME_RO RGUI_T(KC_O)
-
 #define LA_SYM MO(_SYM)
 #define LA_NAV MO(_NAV)
 #define LA_FNC MO(_FNC)
@@ -155,9 +131,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                   KC_TRANS,    KC_TRANS,    KC_TRANS, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS                                
   ),
   [_NAV] = LAYOUT(
-    KC_TRANS, KC_TRANS, KC_CLOSE, KC_ESCAPE, KC_ENTER, KC_TAB,                                              KC_TRANS, KC_PGUP,   KC_HOME,  KC_TAB,   KC_TRANS,  KC_TRANS, 
-    KC_TRANS, OS_CMD,   OS_ALT,   OS_CTRL,   OS_SHFT,  KC_DELETE,                                           KC_LEFT,  KC_DOWN,   KC_UP,    KC_RIGHT, KC_TRANS,  KC_TRANS, 
-    KC_TRANS, KC_UNDO,  KC_CUT,   KC_COPY,   KC_PASTE, KC_BSPACE, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS, KC_PGDOWN, KC_END,   KC_SPACE, KC_INSERT, KC_TRANS, 
+    KC_TRANS,  KC_TRANS, KC_CLOSE, KC_ESCAPE, KC_ENTER, KC_TAB,                                              KC_TRANS, KC_PGUP,   KC_HOME,  KC_TAB,   KC_TRANS,  KC_TRANS, 
+    KC_TRANS,  OS_CMD,   OS_ALT,   OS_CTRL,   OS_SHFT,  KC_DELETE,                                           KC_LEFT,  KC_DOWN,   KC_UP,    KC_RIGHT, KC_TRANS,  KC_TRANS, 
+    KC_TRANS,  KC_UNDO,  KC_CUT,   KC_COPY,   KC_PASTE, KC_BSPACE, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS, KC_PGDOWN, KC_END,   KC_SPACE, KC_INSERT, KC_TRANS, 
                                   KC_TRANS,  KC_TRANS, KC_TRANS,  KC_TRANS, KC_TRANS,   KC_PDT,   KC_NDT,   KC_TRANS, KC_TRANS,  KC_TRANS                                 
   ),
   [_FNC] = LAYOUT(
@@ -170,7 +146,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     MU_MOD,   KC_MPLY,  MU_TOG,   KC_TRANS, KC_TRANS, KC_OLED,                                            KC_MS_WH_UP,   KC_MS_BTN1,    KC_MS_UP,   KC_MS_BTN2,     RGB_SAI, RGB_SAD, 
     MU_TOG,   KC_LGUI,  KC_LALT,  KC_LCTL,  KC_LSFT,  KC_TRANS,                                           KC_MS_WH_DOWN, KC_MS_LEFT,    KC_MS_DOWN, KC_MS_RIGHT,    RGB_HUI, RGB_HUD, 
     KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS,      KC_MS_WH_LEFT, KC_MS_BTN3, KC_MS_WH_RIGHT, RGB_VAI, RGB_VAD, 
-                                  KC_TRANS, KC_TRANS, KC_TRANS, KC_PDT,   KC_NDT,     KC_TRANS, KC_TRANS, TO(0),         KC_TRANS,      KC_TRANS                                      
+                                  KC_TRANS, KC_TRANS, KC_TRANS, KC_PDT,   KC_NDT,     KC_TRANS, KC_TRANS, KC_TRANS,      KC_TRANS,      KC_TRANS                                      
   )
 };
 // clang-format on
@@ -197,7 +173,7 @@ bool is_oneshot_ignored_key(uint16_t keycode)
         case OS_SHFT:
         case OS_CTRL:
         case OS_ALT:
-        case OS_CMD: 
+        case OS_CMD:
         case KC_SMART_NUMBER:
             return true;
     }
