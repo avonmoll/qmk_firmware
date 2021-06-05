@@ -64,7 +64,10 @@ enum custom_keycodes
     OS_ALT,
     OS_CMD,
     KC_SMART_CAPSLOCK,
-    KC_SMART_NUMBER
+    KC_SMART_NUMBER,
+    UC_SHRG,                        // ¯\_(ツ)_/¯
+    UC_DISA,                        // ಠ_ಠ
+    UC_LVIT,                        // ♥‿♥
 };
 
 // clang-format off
@@ -119,9 +122,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
   // Symbols in order of frequency # | & { } , ? [ ] _ < > $ % ` ' / - 0 : \ 1 ( ) = ^ ~ " 6 7 8 ! . 9 + @ * 2 3 4 5 
   [_SYM] = LAYOUT(
-    KC_TRANS, KC_TRANS, KC_SLASH,  KC_LBRC,  KC_RBRC,  KC_CIRC,                                            KC_DQUO,  KC_LABK,  KC_RABK,  KC_UNDS,  KC_TILDE, KC_TRANS, 
-    KC_TRANS, KC_HASH,  KC_EQUAL,  KC_LCBR,  KC_RCBR,  KC_ASTR,                                            KC_PLUS,  KC_LPRN,  KC_RPRN,  KC_MINUS, KC_COLN,  KC_TRANS, 
-    KC_TRANS, KC_DLR,   KC_BSLASH, KC_PIPE,  KC_AMPR,  KC_GRV,   KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_QUOT,  KC_PERC,  KC_EXLM,  KC_QUES,  KC_AT,    KC_TRANS, 
+    UC_SHRG,  KC_TRANS, KC_SLASH,  KC_LBRC,  KC_RBRC,  KC_CIRC,                                            KC_DQUO,  KC_LABK,  KC_RABK,  KC_UNDS,  KC_TILDE, KC_TRANS, 
+    UC_DISA,  KC_HASH,  KC_EQUAL,  KC_LCBR,  KC_RCBR,  KC_ASTR,                                            KC_PLUS,  KC_LPRN,  KC_RPRN,  KC_MINUS, KC_COLN,  KC_TRANS, 
+    UC_LVIT,  KC_DLR,   KC_BSLASH, KC_PIPE,  KC_AMPR,  KC_GRV,   KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_QUOT,  KC_PERC,  KC_EXLM,  KC_QUES,  KC_AT,    KC_TRANS, 
                                    KC_TRANS, KC_TRANS, MO(_NUM), KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS                                
   ),
   [_NUM] = LAYOUT(
@@ -258,6 +261,23 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
                 set_single_persistent_default_layer(_RSTHD);
             }
             break;
+#ifdef UNICODE_ENABLE
+        case UC_SHRG:  // ¯\_(ツ)_/¯
+            if (record->event.pressed) {
+                send_unicode_string("¯\\_(ツ)_/¯");
+            }
+            break;
+        case UC_DISA:  // ಠ_ಠ
+            if (record->event.pressed) {
+                send_unicode_string("ಠ_ಠ");
+            }
+            break;
+        case UC_LVIT:  // ♥‿♥
+            if (record->event.pressed) {
+                send_unicode_string("♥‿♥");
+            }
+            break;
+#endif
     }
 
     return true;
