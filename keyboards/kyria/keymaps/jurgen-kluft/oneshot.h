@@ -1,11 +1,13 @@
 #pragma once
+#include QMK_KEYBOARD_H
 
 #define ENABLE_ONESHOT
 
 #ifdef ENABLE_ONESHOT
-//#define ENABLE_ONESHOT_HOLD
 
-#include QMK_KEYBOARD_H
+// This enables a feature where you can put a modifier in a 'hold' state and where
+// it will only be deactivated when pressing a oneshot cancel key.
+#define ENABLE_ONESHOT_HOLD
 
 // Represents the four states a oneshot key can be in
 typedef enum
