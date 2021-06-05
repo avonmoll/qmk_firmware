@@ -227,19 +227,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
 
     if ((smart_feature_cancel_key(keycode, record)) || (keycode < QK_MODS_MAX && !IS_MOD(keycode)))
     {
-        if (smart_feature_state(SMART_CAPSLOCK) || smart_feature_state(SMART_NUMBERS))
+        if (smart_feature_state(SMART_CAPSLOCK))
         {
-            // let smart caps handle keys
-            if (!smart_capslock_process(keycode, record))
-            {
-                return false;
-            }
-
-            // let smart numbers handle keys
-            if (!smart_numbers_process(keycode, record))
-            {
-                return false;
-            }
+            smart_capslock_process(keycode, record);
+        }
+        if (smart_feature_state(SMART_NUMBERS))
+        {
+            smart_numbers_process(keycode, record);
         }
     }
 

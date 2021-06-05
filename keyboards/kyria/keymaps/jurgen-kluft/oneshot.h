@@ -3,6 +3,7 @@
 #define ENABLE_ONESHOT
 
 #ifdef ENABLE_ONESHOT
+//#define ENABLE_ONESHOT_HOLD
 
 #include QMK_KEYBOARD_H
 
@@ -14,9 +15,11 @@ typedef enum
     os_down_unused = 0x02,
     os_down_used   = 0x04,
     os_state_mask  = 0x0F,
+#ifdef ENABLE_ONESHOT_HOLD
     os_mode_none   = 0x00,
     os_mode_hold   = 0x80,
     os_mode_mask   = 0x80,
+#endif
 } oneshot_state;
 
 // Custom oneshot mod implementation that doesn't rely on timers. If a mod is

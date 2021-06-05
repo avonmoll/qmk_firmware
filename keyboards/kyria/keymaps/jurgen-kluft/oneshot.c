@@ -2,14 +2,8 @@
 
 #ifdef ENABLE_ONESHOT
 
-#define CASSERT(predicate) _impl_CASSERT_LINE(predicate,__LINE__,__FILE__)
 
-#define _impl_PASTE(a,b) a##b
-#define _impl_CASSERT_LINE(predicate, line, file) \
-    typedef char _impl_PASTE(assertion_failed_##file##_,line)[2*!!(predicate)-1];
-
-CASSERT(sizeof(oneshot_state) == sizeof(uint8_t));
-
+#ifdef ENABLE_ONESHOT_HOLD
 bool is_oneshot_hold(oneshot_state state)
 {
     return (state & os_mode_mask) == os_mode_hold;
@@ -19,6 +13,8 @@ void toggle_oneshot_hold(oneshot_state* state)
 {
     *state = (*state ^ os_mode_hold);
 }
+#endif
+
 
 void update_oneshot(oneshot_state* state, uint16_t mod, uint16_t trigger, uint16_t keycode, keyrecord_t* record)
 {
@@ -29,7 +25,7 @@ void update_oneshot(oneshot_state* state, uint16_t mod, uint16_t trigger, uint16
             // Trigger keydown
             if ((*state & os_state_mask) == os_up_unqueued)
             {
-                register_code(mod);
+                add_mods(MOD_BIT(mod));
             }
             *state = *state | os_down_unused;
         }
@@ -41,15 +37,29 @@ void update_oneshot(oneshot_state* state, uint16_t mod, uint16_t trigger, uint16
                 case os_down_unused:
                     // If we didn't use the mod while trigger was held, queue it.
                     *state = (*state & ~os_state_mask) | os_up_queued;
+                    del_mods(MOD_BIT(mod));
+                    add_oneshot_mods(MOD_BIT(mod));
                     break;
                 case os_down_unused | os_up_queued:
                     *state = (*state ^ os_down_unused);
-                    toggle_oneshot_hold(state); 
+#ifdef ENABLE_ONESHOT_HOLD
+                    toggle_oneshot_hold(state);
+                    if (is_oneshot_hold(*state))
+                    {
+                        del_oneshot_mods(MOD_BIT(mod));
+                        add_mods(MOD_BIT(mod));
+                    }
+                    else
+                    {
+                        del_mods(MOD_BIT(mod));
+                        add_oneshot_mods(MOD_BIT(mod));
+                    }
+#endif
                     break;
                 case os_down_used:
                     // If we did use the mod while trigger was held, unregister it.
                     *state = os_up_unqueued;
-                    unregister_code(mod);
+                    del_mods(MOD_BIT(mod));
                     break;
                 default: 
                     break;
@@ -64,14 +74,13 @@ void update_oneshot(oneshot_state* state, uint16_t mod, uint16_t trigger, uint16
             {
                 if ((*state & os_state_mask) != os_up_unqueued)
                 {
-                    // Cancel all on designated cancel keydown.
-                    unregister_code(mod);
+                    // Turn off mod
+                    del_mods(MOD_BIT(mod));
+                    del_oneshot_mods(MOD_BIT(mod));
                 } 
                 *state = os_up_unqueued;
-            }
-        }
-        else
-        {
+            } 
+        } else {
             if (!is_oneshot_ignored_key(keycode))
             {
                 // On non-ignored keyup, consider the oneshot used.
@@ -82,15 +91,18 @@ void update_oneshot(oneshot_state* state, uint16_t mod, uint16_t trigger, uint16
                         *state = os_down_used;
                         break;
                     case os_up_queued:
+#ifdef ENABLE_ONESHOT_HOLD
                         if (!is_oneshot_hold(*state))
                         {
                             *state = os_up_unqueued;
-                            unregister_code(mod);
                         }
+#else
+                        *state = os_up_unqueued;
+#endif
                         break;
                     default: break;
                 }
-            }
+            }            
         }
     }
 }

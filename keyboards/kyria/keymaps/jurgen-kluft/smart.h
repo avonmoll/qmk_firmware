@@ -14,8 +14,8 @@ void smart_feature_disable(uint8_t f);
 bool smart_feature_cancel_key(uint16_t keycode, keyrecord_t *record);
 
 // ------ smart capital letters ----------
-bool smart_capslock_process(uint16_t keycode, keyrecord_t *record);
+void smart_capslock_process(uint16_t keycode, keyrecord_t *record);
 
 // ------ smart numbers ----------
-bool smart_numbers_process(uint16_t keycode, keyrecord_t *record);
+void smart_numbers_process(uint16_t keycode, keyrecord_t *record);
 
