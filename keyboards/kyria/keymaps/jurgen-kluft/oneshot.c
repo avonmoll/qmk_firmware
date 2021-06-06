@@ -62,6 +62,8 @@ void update_oneshot(oneshot_state* state, uint16_t mod, uint16_t trigger, uint16
                     // If we did use the mod while trigger was held, unregister it.
                     *state = os_up_unqueued;
                     del_mods(modbit);
+                    del_oneshot_mods(modbit);
+                    unregister_mods(modbit);
                     break;
                 default: 
                     break;
@@ -79,6 +81,7 @@ void update_oneshot(oneshot_state* state, uint16_t mod, uint16_t trigger, uint16
                     // Turn off mod
                     del_mods(modbit);
                     del_oneshot_mods(modbit);
+                    unregister_mods(modbit);
                 } 
                 *state = os_up_unqueued;
             } 
@@ -96,6 +99,9 @@ void update_oneshot(oneshot_state* state, uint16_t mod, uint16_t trigger, uint16
 #ifdef ENABLE_ONESHOT_HOLD
                         if (!is_oneshot_hold(*state))
                         {
+                            del_mods(modbit);
+                            del_oneshot_mods(modbit);
+                            unregister_mods(modbit);
                             *state = os_up_unqueued;
                         }
 #else
