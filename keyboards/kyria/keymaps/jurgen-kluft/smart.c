@@ -31,12 +31,12 @@ void smart_feature_toggle(uint8_t f, uint8_t layer) {
 #define SKC_A S(KC_A)
 #define SKC_Z S(KC_Z)
 
-bool smart_capslock_process(uint16_t keycode, keyrecord_t *record) {
+void smart_capslock_process(uint16_t keycode, keyrecord_t *record) {
 
   if (smart_feature_state(SMART_CAPSLOCK)) {
 
     switch (keycode) {
-      case KC_SCLN: keycode = KC_UNDS;
+      case KC_SCLN:
       case SKC_A ... SKC_Z:
       case KC_BSPC:
       case KC_DEL:
@@ -56,14 +56,13 @@ bool smart_capslock_process(uint16_t keycode, keyrecord_t *record) {
       smart_feature_disable(SMART_CAPSLOCK);
     }
   }
-  return true;
 }
 
 
 // ----------------------------------------------------------------------------------------------------
 // smart numbers
 
-bool smart_numbers_process(uint16_t keycode, keyrecord_t *record) {
+void smart_numbers_process(uint16_t keycode, keyrecord_t *record) {
 
   if (smart_feature_state(SMART_NUMBERS)) {
 
@@ -95,6 +94,4 @@ bool smart_numbers_process(uint16_t keycode, keyrecord_t *record) {
       smart_feature_disable(SMART_NUMBERS);
     }
   }
-  
-  return true;
 }

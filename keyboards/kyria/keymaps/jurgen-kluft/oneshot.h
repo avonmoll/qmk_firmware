@@ -1,18 +1,27 @@
 #pragma once
+#include QMK_KEYBOARD_H
 
 #define ENABLE_ONESHOT
 
 #ifdef ENABLE_ONESHOT
 
-#include QMK_KEYBOARD_H
+// This enables a feature where you can put a modifier in a 'hold' state and where
+// it will only be deactivated when pressing a oneshot cancel key.
+#define ENABLE_ONESHOT_HOLD
 
 // Represents the four states a oneshot key can be in
 typedef enum
 {
-    os_up_unqueued,
-    os_up_queued,
-    os_down_unused,
-    os_down_used,
+    os_up_unqueued = 0x00,
+    os_up_queued   = 0x01,
+    os_down_unused = 0x02,
+    os_down_used   = 0x04,
+    os_state_mask  = 0x0F,
+#ifdef ENABLE_ONESHOT_HOLD
+    os_mode_none   = 0x00,
+    os_mode_hold   = 0x80,
+    os_mode_mask   = 0x80,
+#endif
 } oneshot_state;
 
 // Custom oneshot mod implementation that doesn't rely on timers. If a mod is

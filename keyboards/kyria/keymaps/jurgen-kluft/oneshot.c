@@ -2,34 +2,71 @@
 
 #ifdef ENABLE_ONESHOT
 
+
+#ifdef ENABLE_ONESHOT_HOLD
+bool is_oneshot_hold(oneshot_state state)
+{
+    return (state & os_mode_mask) == os_mode_hold;
+}
+
+void toggle_oneshot_hold(oneshot_state* state)
+{
+    *state = (*state ^ os_mode_hold);
+}
+#endif
+
 void update_oneshot(oneshot_state* state, uint16_t mod, uint16_t trigger, uint16_t keycode, keyrecord_t* record)
 {
+    // @TODO: Can still extract MOD_BIT(mod) out to the caller site
+    uint16_t modbit = MOD_BIT(mod);
+    
     if (keycode == trigger)
     {
         if (record->event.pressed)
         {
             // Trigger keydown
-            if (*state == os_up_unqueued)
+            if ((*state & os_state_mask) == os_up_unqueued)
             {
-                register_code(mod);
+                add_mods(modbit);
             }
-            *state = os_down_unused;
+            *state = *state | os_down_unused;
         }
         else
         {
             // Trigger keyup
-            switch (*state)
+            switch (*state & os_state_mask)
             {
                 case os_down_unused:
                     // If we didn't use the mod while trigger was held, queue it.
-                    *state = os_up_queued;
+                    *state = (*state & ~os_state_mask) | os_up_queued;
+                    del_mods(modbit);
+                    add_oneshot_mods(modbit);
+                    break;
+                case os_down_unused | os_up_queued:
+                    *state = (*state ^ os_down_unused);
+#ifdef ENABLE_ONESHOT_HOLD
+                    toggle_oneshot_hold(state);
+                    if (is_oneshot_hold(*state))
+                    {
+                        del_oneshot_mods(modbit);
+                        add_mods(modbit);
+                    }
+                    else
+                    {
+                        del_mods(modbit);
+                        add_oneshot_mods(modbit);
+                    }
+#endif
                     break;
                 case os_down_used:
                     // If we did use the mod while trigger was held, unregister it.
                     *state = os_up_unqueued;
-                    unregister_code(mod);
+                    del_mods(modbit);
+                    del_oneshot_mods(modbit);
+                    unregister_mods(modbit);
                     break;
-                default: break;
+                default: 
+                    break;
             }
         }
     }
@@ -37,28 +74,43 @@ void update_oneshot(oneshot_state* state, uint16_t mod, uint16_t trigger, uint16
     {
         if (record->event.pressed)
         {
-            if (is_oneshot_cancel_key(keycode) && *state != os_up_unqueued)
+            if (is_oneshot_cancel_key(keycode))
             {
-                // Cancel oneshot on designated cancel keydown.
+                if ((*state & os_state_mask) != os_up_unqueued)
+                {
+                    // Turn off mod
+                    del_mods(modbit);
+                    del_oneshot_mods(modbit);
+                    unregister_mods(modbit);
+                } 
                 *state = os_up_unqueued;
-                unregister_code(mod);
-            }
-        }
-        else
-        {
+            } 
+        } else {
             if (!is_oneshot_ignored_key(keycode))
             {
                 // On non-ignored keyup, consider the oneshot used.
-                switch (*state)
+                switch (*state & os_state_mask)
                 {
-                    case os_down_unused: *state = os_down_used; break;
+                    case os_down_unused: 
+                    case os_down_unused | os_up_queued: 
+                        *state = os_down_used;
+                        break;
                     case os_up_queued:
+#ifdef ENABLE_ONESHOT_HOLD
+                        if (!is_oneshot_hold(*state))
+                        {
+                            del_mods(modbit);
+                            del_oneshot_mods(modbit);
+                            unregister_mods(modbit);
+                            *state = os_up_unqueued;
+                        }
+#else
                         *state = os_up_unqueued;
-                        unregister_code(mod);
+#endif
                         break;
                     default: break;
                 }
-            }
+            }            
         }
     }
 }

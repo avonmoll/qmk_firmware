@@ -49,30 +49,6 @@
 #define KC_LCBRACE LSFT(KC_LBRACKET)
 #define KC_RCBRACE LSFT(KC_RBRACKET)
 
-// QWERTY: Left-hand home row mods
-#define HOME_QA LGUI_T(KC_A)
-#define HOME_QS LALT_T(KC_S)
-#define HOME_QD LCTL_T(KC_D)
-#define HOME_QF LSFT_T(KC_F)
-
-// QWERTY: Right-hand home row mods
-#define HOME_QJ RSFT_T(KC_J)
-#define HOME_QK RCTL_T(KC_K)
-#define HOME_QL LALT_T(KC_L)
-#define HOME_QSCLN RGUI_T(KC_SCLN)
-
-// RSTHD: Left-hand home row mods
-#define HOME_RR LGUI_T(KC_R)
-#define HOME_RS LALT_T(KC_S)
-#define HOME_RT LCTL_T(KC_T)
-#define HOME_RH LSFT_T(KC_H)
-
-// RSTHD: Right-hand home row mods
-#define HOME_RN RSFT_T(KC_N)
-#define HOME_RA RCTL_T(KC_A)
-#define HOME_RI LALT_T(KC_I)
-#define HOME_RO RGUI_T(KC_O)
-
 #define LA_SYM MO(_SYM)
 #define LA_NAV MO(_NAV)
 #define LA_FNC MO(_FNC)
@@ -88,7 +64,10 @@ enum custom_keycodes
     OS_ALT,
     OS_CMD,
     KC_SMART_CAPSLOCK,
-    KC_SMART_NUMBER
+    KC_SMART_NUMBER,
+    UC_SHRG,                        // ¯\_(ツ)_/¯
+    UC_DISA,                        // ಠ_ಠ
+    UC_LVIT,                        // ♥‿♥
 };
 
 // clang-format off
@@ -143,9 +122,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
   // Symbols in order of frequency # | & { } , ? [ ] _ < > $ % ` ' / - 0 : \ 1 ( ) = ^ ~ " 6 7 8 ! . 9 + @ * 2 3 4 5 
   [_SYM] = LAYOUT(
-    KC_TRANS, KC_TRANS, KC_SLASH,  KC_LBRC,  KC_RBRC,  KC_CIRC,                                            KC_DQUO,  KC_LABK,  KC_RABK,  KC_UNDS,  KC_TILDE, KC_TRANS, 
-    KC_TRANS, KC_HASH,  KC_EQUAL,  KC_LCBR,  KC_RCBR,  KC_ASTR,                                            KC_PLUS,  KC_LPRN,  KC_RPRN,  KC_MINUS, KC_COLN,  KC_TRANS, 
-    KC_TRANS, KC_DLR,   KC_BSLASH, KC_PIPE,  KC_AMPR,  KC_GRV,   KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_QUOT,  KC_PERC,  KC_EXLM,  KC_QUES,  KC_AT,    KC_TRANS, 
+    UC_SHRG,  KC_TRANS, KC_SLASH,  KC_LBRC,  KC_RBRC,  KC_CIRC,                                            KC_DQUO,  KC_LABK,  KC_RABK,  KC_UNDS,  KC_TILDE, KC_TRANS, 
+    UC_DISA,  KC_HASH,  KC_EQUAL,  KC_LCBR,  KC_RCBR,  KC_ASTR,                                            KC_PLUS,  KC_LPRN,  KC_RPRN,  KC_MINUS, KC_COLN,  KC_TRANS, 
+    UC_LVIT,  KC_DLR,   KC_BSLASH, KC_PIPE,  KC_AMPR,  KC_GRV,   KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_QUOT,  KC_PERC,  KC_EXLM,  KC_QUES,  KC_AT,    KC_TRANS, 
                                    KC_TRANS, KC_TRANS, MO(_NUM), KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS                                
   ),
   [_NUM] = LAYOUT(
@@ -155,10 +134,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                   KC_TRANS,    KC_TRANS,    KC_TRANS, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS                                
   ),
   [_NAV] = LAYOUT(
-    KC_TRANS, KC_TRANS, KC_CLOSE, KC_ESCAPE, KC_ENTER, KC_TAB,                                              KC_INSERT, KC_PGUP,   KC_HOME,  KC_TRANS, KC_TRANS, KC_TRANS, 
-    KC_TRANS, OS_CMD,   OS_ALT,   OS_CTRL,   OS_SHFT,  KC_DELETE,                                           KC_LEFT,   KC_DOWN,   KC_UP,    KC_RIGHT, KC_TRANS, KC_TRANS, 
-    KC_TRANS, KC_UNDO,  KC_CUT,   KC_COPY,   KC_PASTE, KC_BSPACE, KC_TRANS, KC_TRANS,   KC_PDT,   KC_TRANS, KC_TRANS,  KC_PGDOWN, KC_END,   KC_TRANS, KC_TRANS, KC_TRANS, 
-                                  KC_TRANS,  KC_TRANS, KC_TRANS,  KC_TRANS, KC_TRANS,   KC_NDT,   KC_TRANS, KC_TRANS,  KC_TRANS,  KC_TRANS                                 
+    KC_TRANS,  KC_TRANS, KC_CLOSE, KC_ESCAPE, KC_ENTER, KC_TAB,                                              KC_INSERT, KC_PGUP,   KC_HOME,  KC_TRANS, KC_TRANS, KC_TRANS, 
+    KC_TRANS,  OS_CMD,   OS_ALT,   OS_CTRL,   OS_SHFT,  KC_DELETE,                                           KC_LEFT,   KC_DOWN,   KC_UP,    KC_RIGHT, KC_TRANS, KC_TRANS, 
+    KC_TRANS,  KC_UNDO,  KC_CUT,   KC_COPY,   KC_PASTE, KC_BSPACE, KC_TRANS, KC_TRANS,   KC_PDT, KC_TRANS,   KC_TRANS,  KC_PGDOWN, KC_END,   KC_TRANS, KC_TRANS, KC_TRANS, 
+                                   KC_TRANS,  KC_TRANS, KC_TRANS,  KC_TRANS, KC_TRANS,   KC_NDT, KC_TRANS,   KC_TRANS,  KC_TRANS,  KC_TRANS                                 
   ),
   [_FNC] = LAYOUT(
     KC_TRANS, KC_F12, KC_F11, KC_F10,   KC_F9,    KC_TRANS,                                           KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, 
@@ -197,7 +176,7 @@ bool is_oneshot_ignored_key(uint16_t keycode)
         case OS_SHFT:
         case OS_CTRL:
         case OS_ALT:
-        case OS_CMD: 
+        case OS_CMD:
         case KC_SMART_NUMBER:
             return true;
     }
@@ -251,19 +230,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
 
     if ((smart_feature_cancel_key(keycode, record)) || (keycode < QK_MODS_MAX && !IS_MOD(keycode)))
     {
-        if (smart_feature_state(SMART_CAPSLOCK) || smart_feature_state(SMART_NUMBERS))
+        if (smart_feature_state(SMART_CAPSLOCK))
         {
-            // let smart caps handle keys
-            if (!smart_capslock_process(keycode, record))
-            {
-                return false;
-            }
-
-            // let smart numbers handle keys
-            if (!smart_numbers_process(keycode, record))
-            {
-                return false;
-            }
+            smart_capslock_process(keycode, record);
+        }
+        if (smart_feature_state(SMART_NUMBERS))
+        {
+            smart_numbers_process(keycode, record);
         }
     }
 
@@ -288,6 +261,23 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
                 set_single_persistent_default_layer(_RSTHD);
             }
             break;
+#ifdef UNICODE_ENABLE
+        case UC_SHRG:  // ¯\_(ツ)_/¯
+            if (record->event.pressed) {
+                send_unicode_string("¯\\_(ツ)_/¯");
+            }
+            break;
+        case UC_DISA:  // ಠ_ಠ
+            if (record->event.pressed) {
+                send_unicode_string("ಠ_ಠ");
+            }
+            break;
+        case UC_LVIT:  // ♥‿♥
+            if (record->event.pressed) {
+                send_unicode_string("♥‿♥");
+            }
+            break;
+#endif
     }
 
     return true;
