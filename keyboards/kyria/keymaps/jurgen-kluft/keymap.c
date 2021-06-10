@@ -134,10 +134,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                   KC_TRANS,    KC_TRANS,    KC_TRANS, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS                                
   ),
   [_NAV] = LAYOUT(
-    KC_TRANS,  KC_TRANS, KC_CLOSE, KC_ESCAPE, KC_ENTER, KC_TAB,                                              KC_TRANS, KC_PGUP,   KC_HOME,  KC_TAB,   KC_TRANS,  KC_TRANS, 
-    KC_TRANS,  OS_CMD,   OS_ALT,   OS_CTRL,   OS_SHFT,  KC_DELETE,                                           KC_LEFT,  KC_DOWN,   KC_UP,    KC_RIGHT, KC_TRANS,  KC_TRANS, 
-    KC_TRANS,  KC_UNDO,  KC_CUT,   KC_COPY,   KC_PASTE, KC_BSPACE, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS, KC_PGDOWN, KC_END,   KC_SPACE, KC_INSERT, KC_TRANS, 
-                                  KC_TRANS,  KC_TRANS, KC_TRANS,  KC_TRANS, KC_TRANS,   KC_PDT,   KC_NDT,   KC_TRANS, KC_TRANS,  KC_TRANS                                 
+    KC_TRANS,  KC_TRANS, KC_CLOSE, KC_ESCAPE, KC_ENTER, KC_TAB,                                              KC_INSERT, KC_PGUP,   KC_HOME,  KC_TRANS, KC_TRANS, KC_TRANS, 
+    KC_TRANS,  OS_CMD,   OS_ALT,   OS_CTRL,   OS_SHFT,  KC_DELETE,                                           KC_LEFT,   KC_DOWN,   KC_UP,    KC_RIGHT, KC_TRANS, KC_TRANS, 
+    KC_TRANS,  KC_UNDO,  KC_CUT,   KC_COPY,   KC_PASTE, KC_BSPACE, KC_TRANS, KC_TRANS,   KC_PDT, KC_TRANS,   KC_TRANS,  KC_PGDOWN, KC_END,   KC_TRANS, KC_TRANS, KC_TRANS, 
+                                   KC_TRANS,  KC_TRANS, KC_TRANS,  KC_TRANS, KC_TRANS,   KC_NDT, KC_TRANS,   KC_TRANS,  KC_TRANS,  KC_TRANS                                 
   ),
   [_FNC] = LAYOUT(
     KC_TRANS, KC_F12, KC_F11, KC_F10,   KC_F9,    KC_TRANS,                                           KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, 
