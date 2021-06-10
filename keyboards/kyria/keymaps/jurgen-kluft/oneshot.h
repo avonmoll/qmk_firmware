@@ -4,38 +4,39 @@
 #define ENABLE_ONESHOT
 
 #ifdef ENABLE_ONESHOT
+#pragma once
 
-// This enables a feature where you can put a modifier in a 'hold' state and where
-// it will only be deactivated when pressing a oneshot cancel key.
-#define ENABLE_ONESHOT_HOLD
+#include QMK_KEYBOARD_H
 
-// Represents the four states a oneshot key can be in
-typedef enum
-{
-    os_up_unqueued = 0x00,
-    os_up_queued   = 0x01,
-    os_down_unused = 0x02,
-    os_down_used   = 0x04,
-    os_state_mask  = 0x0F,
-#ifdef ENABLE_ONESHOT_HOLD
-    os_mode_none   = 0x00,
-    os_mode_hold   = 0x80,
-    os_mode_mask   = 0x80,
-#endif
-} oneshot_state;
+typedef enum {
+    ONESHOT_LCTL = 0,
+    ONESHOT_LSFT = 1,
+    ONESHOT_LALT = 2,
+    ONESHOT_LGUI = 3,
+    ONESHOT_RCTL = 4,
+    ONESHOT_RSFT = 5,
+    ONESHOT_RALT = 6,
+    ONESHOT_RGUI = 7,
+    ONESHOT_NONE = 8,
+    ONESHOT_MOD_COUNT = 8,
+} oneshot_mod;
 
-// Custom oneshot mod implementation that doesn't rely on timers. If a mod is
-// used while it is held it will be unregistered on keyup as normal, otherwise
-// it will be queued and only released after the next non-mod keyup.
-void update_oneshot(oneshot_state* state, uint16_t mod, uint16_t trigger, uint16_t keycode, keyrecord_t* record);
 
-// To be implemented by the consumer. Defines keys to cancel oneshot mods.
-bool is_oneshot_cancel_key(uint16_t keycode);
+// This function should be called inside proces_record_user and does everything needed to get one shot modifiers working.
+// Returns true if the keycode needs further handling, false otherwise.
+bool update_oneshot_modifiers(uint16_t keycode, keyrecord_t *record);
 
-// To be implemented by the consumer. Defines keys to ignore when determining
-// whether a oneshot mod has been used. Setting this to modifiers and layer
-// change keys allows stacking multiple oneshot modifiers, and carrying them
-// between layers.
-bool is_oneshot_ignored_key(uint16_t keycode);
+// TO BE IMPLEMENTED BY THE COMSUMER
+// This function should return the keycode of the modifier to be triggered for a given (custom) keycode. 
+oneshot_mod get_modifier_for_trigger_key(uint16_t keycode); 
+
+// TO BE IMPLEMENTED BY THE COMSUMER
+// This function should return true for keycodes that must be ignored in the oneshot modifier behaviour.
+// You probably want to ignore layer keys. Trigger keys don't need to be specified here.
+bool is_oneshot_modifier_ignored_key(uint16_t keycode);
+
+// TO BE IMPLEMENTED BY THE COMSUMER
+// This function should return true for keycodes that should reset all oneshot modifiers.
+bool is_oneshot_modifier_cancel_key(uint16_t keycode);
 
 #endif

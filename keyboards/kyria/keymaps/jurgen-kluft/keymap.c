@@ -155,7 +155,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // clang-format on
 
 #ifdef ENABLE_ONESHOT
-bool is_oneshot_cancel_key(uint16_t keycode)
+
+bool is_oneshot_modifier_cancel_key(uint16_t keycode)
 {
     switch (keycode)
     {
@@ -165,7 +166,7 @@ bool is_oneshot_cancel_key(uint16_t keycode)
     }
 }
 
-bool is_oneshot_ignored_key(uint16_t keycode)
+bool is_oneshot_modifier_ignored_key(uint16_t keycode)
 {
     switch (keycode)
     {
@@ -173,20 +174,24 @@ bool is_oneshot_ignored_key(uint16_t keycode)
         case LA_NAV:
         case LA_FNC:
         case KC_LSFT:
-        case OS_SHFT:
-        case OS_CTRL:
-        case OS_ALT:
-        case OS_CMD:
         case KC_SMART_NUMBER:
             return true;
     }
     return false;
 }
 
-oneshot_state os_shft_state = os_up_unqueued;
-oneshot_state os_ctrl_state = os_up_unqueued;
-oneshot_state os_alt_state  = os_up_unqueued;
-oneshot_state os_cmd_state  = os_up_unqueued;
+oneshot_mod get_modifier_for_trigger_key(uint16_t keycode)
+{
+  switch(keycode)
+  {
+    case OS_SHFT: return ONESHOT_LSFT;
+    case OS_CTRL: return ONESHOT_LCTL;
+    case OS_ALT:  return ONESHOT_LALT;
+    case OS_CMD:  return ONESHOT_LGUI;
+  }
+  return ONESHOT_NONE;
+}
+
 #endif
 
 bool smart_feature_cancel_key(uint16_t keycode, keyrecord_t* recor)
@@ -241,10 +246,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
     }
 
 #ifdef ENABLE_ONESHOT
-    update_oneshot(&os_shft_state, KC_LSFT, OS_SHFT, keycode, record);
-    update_oneshot(&os_ctrl_state, KC_LCTL, OS_CTRL, keycode, record);
-    update_oneshot(&os_alt_state, KC_LALT, OS_ALT, keycode, record);
-    update_oneshot(&os_cmd_state, KC_LCMD, OS_CMD, keycode, record);
+    if (!update_oneshot_modifiers(keycode, record))
+      return true;
 #endif
 
     switch (keycode)

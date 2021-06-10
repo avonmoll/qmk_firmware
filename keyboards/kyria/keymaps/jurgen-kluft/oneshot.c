@@ -2,117 +2,144 @@
 
 #ifdef ENABLE_ONESHOT
 
+// the basic states a oneshot modifier can be in
+typedef enum {
+    UP_OFF = 0,
+    DOWN_ON_TO_UP_ON,
+    UP_ON,
+    DOWN_ON_TO_UP_OFF,
+} oneshot_state;
 
-#ifdef ENABLE_ONESHOT_HOLD
-bool is_oneshot_hold(oneshot_state state)
-{
-    return (state & os_mode_mask) == os_mode_hold;
-}
+oneshot_state modifiers_with_state[ONESHOT_MOD_COUNT] = {
+    UP_OFF, UP_OFF, UP_OFF, UP_OFF, UP_OFF, UP_OFF, UP_OFF, UP_OFF,
+};
 
-void toggle_oneshot_hold(oneshot_state* state)
-{
-    *state = (*state ^ os_mode_hold);
-}
-#endif
+// oneshot mods always get registered immediately to the operating system, but we also
+// need to keep track if the mod(s) got combined with a normal key (applied)
+bool unapplied_mods_present = false;
 
-void update_oneshot(oneshot_state* state, uint16_t mod, uint16_t trigger, uint16_t keycode, keyrecord_t* record)
-{
-    // @TODO: Can still extract MOD_BIT(mod) out to the caller site
-    uint16_t modbit = MOD_BIT(mod);
+// keycode of the last pressed 'normal' key which haven't been released yet
+uint16_t repeating_normal_key = 0;
+
+// utility functions (implemented at the bottom of this file)
+void          set_modifier_state(oneshot_mod osmod, oneshot_state new_state);
+void          set_modifier_state_all(oneshot_state new_state);
+void          set_modifier_state_all_from_to(oneshot_state oneshot_state_from, oneshot_state oneshot_state_to);
+oneshot_state get_modifier_state(oneshot_mod osmod);
+bool          all_modifiers_are_off(void);
+
+// see comment in corresponding headerfile
+bool update_oneshot_modifiers(uint16_t keycode, keyrecord_t *record) {
     
-    if (keycode == trigger)
-    {
-        if (record->event.pressed)
-        {
-            // Trigger keydown
-            if ((*state & os_state_mask) == os_up_unqueued)
-            {
-                add_mods(modbit);
-            }
-            *state = *state | os_down_unused;
-        }
-        else
-        {
-            // Trigger keyup
-            switch (*state & os_state_mask)
-            {
-                case os_down_unused:
-                    // If we didn't use the mod while trigger was held, queue it.
-                    *state = (*state & ~os_state_mask) | os_up_queued;
-                    del_mods(modbit);
-                    add_oneshot_mods(modbit);
-                    break;
-                case os_down_unused | os_up_queued:
-                    *state = (*state ^ os_down_unused);
-#ifdef ENABLE_ONESHOT_HOLD
-                    toggle_oneshot_hold(state);
-                    if (is_oneshot_hold(*state))
-                    {
-                        del_oneshot_mods(modbit);
-                        add_mods(modbit);
-                    }
-                    else
-                    {
-                        del_mods(modbit);
-                        add_oneshot_mods(modbit);
-                    }
-#endif
-                    break;
-                case os_down_used:
-                    // If we did use the mod while trigger was held, unregister it.
-                    *state = os_up_unqueued;
-                    del_mods(modbit);
-                    del_oneshot_mods(modbit);
-                    unregister_mods(modbit);
-                    break;
-                default: 
-                    break;
-            }
-        }
+    // cancel keys
+    if (is_oneshot_modifier_cancel_key(keycode) && record->event.pressed) {
+        unapplied_mods_present = false;
+        set_modifier_state_all(UP_OFF);
+        return false;
     }
-    else
-    {
-        if (record->event.pressed)
-        {
-            if (is_oneshot_cancel_key(keycode))
-            {
-                if ((*state & os_state_mask) != os_up_unqueued)
-                {
-                    // Turn off mod
-                    del_mods(modbit);
-                    del_oneshot_mods(modbit);
-                    unregister_mods(modbit);
-                } 
-                *state = os_up_unqueued;
-            } 
+
+    // ignored keys
+    if (is_oneshot_modifier_ignored_key(keycode)) {
+        return true;
+    }
+
+    oneshot_mod osmod = get_modifier_for_trigger_key(keycode);
+
+    // trigger keys
+    if (osmod != ONESHOT_NONE) {
+        oneshot_state state = get_modifier_state(osmod);
+        if (record->event.pressed) {
+            if (state == UP_OFF) {
+                set_modifier_state(osmod, DOWN_ON_TO_UP_ON);
+                unapplied_mods_present = (repeating_normal_key == 0);
+            } else if (state == UP_ON) {
+                set_modifier_state(osmod, DOWN_ON_TO_UP_OFF);
+            }
         } else {
-            if (!is_oneshot_ignored_key(keycode))
-            {
-                // On non-ignored keyup, consider the oneshot used.
-                switch (*state & os_state_mask)
-                {
-                    case os_down_unused: 
-                    case os_down_unused | os_up_queued: 
-                        *state = os_down_used;
-                        break;
-                    case os_up_queued:
-#ifdef ENABLE_ONESHOT_HOLD
-                        if (!is_oneshot_hold(*state))
-                        {
-                            del_mods(modbit);
-                            del_oneshot_mods(modbit);
-                            unregister_mods(modbit);
-                            *state = os_up_unqueued;
-                        }
-#else
-                        *state = os_up_unqueued;
-#endif
-                        break;
-                    default: break;
+            if (state == DOWN_ON_TO_UP_ON) {
+                if (!unapplied_mods_present) {
+                    set_modifier_state(osmod, UP_OFF);
+                } else {
+                    set_modifier_state(osmod, UP_ON);
                 }
-            }            
+            } else if (state == DOWN_ON_TO_UP_OFF) {
+                set_modifier_state(osmod, UP_OFF);
+            }
         }
     }
+    // normal keys
+    else {
+        if (record->event.pressed) {
+            if (!all_modifiers_are_off()) {
+                if (unapplied_mods_present) {
+                    unapplied_mods_present = false;
+                } else {
+                    unregister_code(repeating_normal_key);
+                    set_modifier_state_all_from_to(UP_ON, UP_OFF);
+                }
+            }
+            repeating_normal_key = keycode;
+        } else {
+            if (!all_modifiers_are_off()) {
+                unregister_code(keycode);
+                set_modifier_state_all_from_to(UP_ON, UP_OFF);
+            }
+            repeating_normal_key = 0;
+        }
+    }
+
+    return true;
+}
+
+// implementation of utility functions
+
+// registers/unregisters a mod to the operating system on state change if necessary
+void update_modifier(oneshot_mod osmod, oneshot_state previous_state, oneshot_state current_state) {
+    if (previous_state == UP_OFF) {
+        register_code(KC_LCTRL + osmod);
+    } else {
+        if (current_state == UP_OFF) {
+            unregister_code(KC_LCTRL + osmod);
+        }
+    }
+}
+
+void set_modifier_state(oneshot_mod osmod, oneshot_state new_state) {
+    oneshot_state previous_state = modifiers_with_state[osmod];
+    if (previous_state != new_state) {
+        modifiers_with_state[osmod] = new_state;
+        update_modifier(osmod, previous_state, new_state);
+    }
+}
+
+void set_modifier_state_all(oneshot_state new_state) {
+    for (int8_t i = 0; i < ONESHOT_MOD_COUNT; i++) {
+        oneshot_state previous_state = modifiers_with_state[i];
+        if (previous_state != new_state) {
+            modifiers_with_state[i] = new_state;
+            update_modifier(i, previous_state, new_state);
+        }
+    }
+}
+
+void set_modifier_state_all_from_to(oneshot_state oneshot_state_from, oneshot_state oneshot_state_to) {
+    for (int8_t i = 0; i < ONESHOT_MOD_COUNT; i++) {
+        if (modifiers_with_state[i] == oneshot_state_from) {
+            modifiers_with_state[i] = oneshot_state_to;
+            update_modifier(i, oneshot_state_from, oneshot_state_to);
+        }
+    }
+}
+
+oneshot_state get_modifier_state(oneshot_mod osmod) { return modifiers_with_state[osmod]; }
+
+bool all_modifiers_are_off() {
+    for (int8_t i = 0; i < ONESHOT_MOD_COUNT; i++) {
+        if (modifiers_with_state[i] != UP_OFF) {
+            return false;
+        }
+    }
+    return true;
 }
 
 #endif
