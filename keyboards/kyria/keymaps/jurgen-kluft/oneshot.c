@@ -12,6 +12,8 @@ typedef enum {
     ONESHOT_STATE_END_PRESSED  = 5,
 } oneshot_state;
 
+oneshot_state modifiers_state_transitions_normal[5] = {ONESHOT_STATE_PRESSED, ONESHOT_STATE_QUEUED, ONESHOT_STATE_LOCK, ONESHOT_STATE_END_PRESSED, ONESHOT_STATE_END_PRESSED};
+
 static oneshot_state modifiers_with_state[ONESHOT_MOD_COUNT] = {
     ONESHOT_STATE_OFF, ONESHOT_STATE_OFF, ONESHOT_STATE_OFF, ONESHOT_STATE_OFF, ONESHOT_STATE_OFF, ONESHOT_STATE_OFF, ONESHOT_STATE_OFF, ONESHOT_STATE_OFF,
 };
@@ -28,10 +30,6 @@ static void          set_modifier_state(oneshot_mod osmod, oneshot_state new_sta
 static void          set_modifier_state_all(oneshot_state new_state);
 static void          set_modifier_state_all_from_to(oneshot_state oneshot_state_from, oneshot_state oneshot_state_to);
 static bool          all_modifiers_are_off(void);
-
-// Advance the state depending on the modifier we are processing
-oneshot_state modifiers_state_transitions_normal[5] = {ONESHOT_STATE_PRESSED, ONESHOT_STATE_QUEUED, ONESHOT_STATE_LOCK, ONESHOT_STATE_END_PRESSED, ONESHOT_STATE_END_PRESSED};
-oneshot_state modifiers_state_transitions_special[5] = {ONESHOT_STATE_PRESSED, ONESHOT_STATE_QUEUED, ONESHOT_STATE_CAPSWORD, ONESHOT_STATE_LOCK, ONESHOT_STATE_END_PRESSED};
 
 // see comment in corresponding headerfile
 bool update_oneshot_modifiers(uint16_t keycode, keyrecord_t *record) {
@@ -57,12 +55,7 @@ bool update_oneshot_modifiers(uint16_t keycode, keyrecord_t *record) {
             if (state == ONESHOT_STATE_OFF) {
                 unapplied_mods_present = (repeating_normal_key == 0);
             }
-            oneshot_state tostate;
-            if (osmod == ONESHOT_LSFT) {
-                tostate = modifiers_state_transitions_special[state];
-            } else {
-                tostate = modifiers_state_transitions_normal[state];
-            }
+            oneshot_state tostate = modifiers_state_transitions_normal[state];
             set_modifier_state(osmod, tostate);
         } else {
             if (state == ONESHOT_STATE_PRESSED) {
