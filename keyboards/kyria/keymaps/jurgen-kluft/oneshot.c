@@ -4,29 +4,34 @@
 
 // the basic states a oneshot modifier can be in
 typedef enum {
-    UP_OFF = 0,
-    DOWN_ON_TO_UP_ON,
-    UP_ON,
-    DOWN_ON_TO_UP_OFF,
+    ONESHOT_STATE_OFF          = 0,
+    ONESHOT_STATE_PRESSED      = 1,
+    ONESHOT_STATE_QUEUED       = 2,
+    ONESHOT_STATE_CAPSWORD     = 3,
+    ONESHOT_STATE_LOCK         = 4,
+    ONESHOT_STATE_END_PRESSED  = 5,
 } oneshot_state;
 
-oneshot_state modifiers_with_state[ONESHOT_MOD_COUNT] = {
-    UP_OFF, UP_OFF, UP_OFF, UP_OFF, UP_OFF, UP_OFF, UP_OFF, UP_OFF,
+static oneshot_state modifiers_with_state[ONESHOT_MOD_COUNT] = {
+    ONESHOT_STATE_OFF, ONESHOT_STATE_OFF, ONESHOT_STATE_OFF, ONESHOT_STATE_OFF, ONESHOT_STATE_OFF, ONESHOT_STATE_OFF, ONESHOT_STATE_OFF, ONESHOT_STATE_OFF,
 };
 
 // oneshot mods always get registered immediately to the operating system, but we also
 // need to keep track if the mod(s) got combined with a normal key (applied)
-bool unapplied_mods_present = false;
+static bool unapplied_mods_present = false;
 
 // keycode of the last pressed 'normal' key which haven't been released yet
-uint16_t repeating_normal_key = 0;
+static uint16_t repeating_normal_key = 0;
 
 // utility functions (implemented at the bottom of this file)
-void          set_modifier_state(oneshot_mod osmod, oneshot_state new_state);
-void          set_modifier_state_all(oneshot_state new_state);
-void          set_modifier_state_all_from_to(oneshot_state oneshot_state_from, oneshot_state oneshot_state_to);
-oneshot_state get_modifier_state(oneshot_mod osmod);
-bool          all_modifiers_are_off(void);
+static void          set_modifier_state(oneshot_mod osmod, oneshot_state new_state);
+static void          set_modifier_state_all(oneshot_state new_state);
+static void          set_modifier_state_all_from_to(oneshot_state oneshot_state_from, oneshot_state oneshot_state_to);
+static bool          all_modifiers_are_off(void);
+
+// Advance the state depending on the modifier we are processing
+oneshot_state modifiers_state_transitions_normal[5] = {ONESHOT_STATE_PRESSED, ONESHOT_STATE_QUEUED, ONESHOT_STATE_LOCK, ONESHOT_STATE_END_PRESSED, ONESHOT_STATE_END_PRESSED};
+oneshot_state modifiers_state_transitions_special[5] = {ONESHOT_STATE_PRESSED, ONESHOT_STATE_QUEUED, ONESHOT_STATE_CAPSWORD, ONESHOT_STATE_LOCK, ONESHOT_STATE_END_PRESSED};
 
 // see comment in corresponding headerfile
 bool update_oneshot_modifiers(uint16_t keycode, keyrecord_t *record) {
@@ -34,8 +39,8 @@ bool update_oneshot_modifiers(uint16_t keycode, keyrecord_t *record) {
     // cancel keys
     if (is_oneshot_modifier_cancel_key(keycode) && record->event.pressed) {
         unapplied_mods_present = false;
-        set_modifier_state_all(UP_OFF);
-        return false;
+        set_modifier_state_all(ONESHOT_STATE_OFF);
+        return true;
     }
 
     // ignored keys
@@ -47,23 +52,27 @@ bool update_oneshot_modifiers(uint16_t keycode, keyrecord_t *record) {
 
     // trigger keys
     if (osmod != ONESHOT_NONE) {
-        oneshot_state state = get_modifier_state(osmod);
+        oneshot_state state = modifiers_with_state[osmod];
         if (record->event.pressed) {
-            if (state == UP_OFF) {
-                set_modifier_state(osmod, DOWN_ON_TO_UP_ON);
+            if (state == ONESHOT_STATE_OFF) {
                 unapplied_mods_present = (repeating_normal_key == 0);
-            } else if (state == UP_ON) {
-                set_modifier_state(osmod, DOWN_ON_TO_UP_OFF);
             }
+            oneshot_state tostate;
+            if (osmod == ONESHOT_LSFT) {
+                tostate = modifiers_state_transitions_special[state];
+            } else {
+                tostate = modifiers_state_transitions_normal[state];
+            }
+            set_modifier_state(osmod, tostate);
         } else {
-            if (state == DOWN_ON_TO_UP_ON) {
+            if (state == ONESHOT_STATE_PRESSED) {
                 if (!unapplied_mods_present) {
-                    set_modifier_state(osmod, UP_OFF);
+                    set_modifier_state(osmod, ONESHOT_STATE_OFF);
                 } else {
-                    set_modifier_state(osmod, UP_ON);
+                    set_modifier_state(osmod, ONESHOT_STATE_QUEUED);
                 }
-            } else if (state == DOWN_ON_TO_UP_OFF) {
-                set_modifier_state(osmod, UP_OFF);
+            } else if (state == ONESHOT_STATE_END_PRESSED) {
+                set_modifier_state(osmod, ONESHOT_STATE_OFF);
             }
         }
     }
@@ -75,14 +84,14 @@ bool update_oneshot_modifiers(uint16_t keycode, keyrecord_t *record) {
                     unapplied_mods_present = false;
                 } else {
                     unregister_code(repeating_normal_key);
-                    set_modifier_state_all_from_to(UP_ON, UP_OFF);
+                    set_modifier_state_all_from_to(ONESHOT_STATE_QUEUED, ONESHOT_STATE_OFF);
                 }
             }
             repeating_normal_key = keycode;
         } else {
             if (!all_modifiers_are_off()) {
                 unregister_code(keycode);
-                set_modifier_state_all_from_to(UP_ON, UP_OFF);
+                set_modifier_state_all_from_to(ONESHOT_STATE_QUEUED, ONESHOT_STATE_OFF);
             }
             repeating_normal_key = 0;
         }
@@ -95,10 +104,10 @@ bool update_oneshot_modifiers(uint16_t keycode, keyrecord_t *record) {
 
 // registers/unregisters a mod to the operating system on state change if necessary
 void update_modifier(oneshot_mod osmod, oneshot_state previous_state, oneshot_state current_state) {
-    if (previous_state == UP_OFF) {
+    if (previous_state == ONESHOT_STATE_OFF) {
         register_code(KC_LCTRL + osmod);
     } else {
-        if (current_state == UP_OFF) {
+        if (current_state == ONESHOT_STATE_OFF) {
             unregister_code(KC_LCTRL + osmod);
         }
     }
@@ -131,11 +140,9 @@ void set_modifier_state_all_from_to(oneshot_state oneshot_state_from, oneshot_st
     }
 }
 
-oneshot_state get_modifier_state(oneshot_mod osmod) { return modifiers_with_state[osmod]; }
-
 bool all_modifiers_are_off() {
     for (int8_t i = 0; i < ONESHOT_MOD_COUNT; i++) {
-        if (modifiers_with_state[i] != UP_OFF) {
+        if (modifiers_with_state[i] != ONESHOT_STATE_OFF) {
             return false;
         }
     }

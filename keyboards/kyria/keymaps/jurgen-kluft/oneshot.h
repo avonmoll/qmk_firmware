@@ -39,4 +39,5 @@ bool is_oneshot_modifier_ignored_key(uint16_t keycode);
 // This function should return true for keycodes that should reset all oneshot modifiers.
 bool is_oneshot_modifier_cancel_key(uint16_t keycode);
 
+
 #endif
