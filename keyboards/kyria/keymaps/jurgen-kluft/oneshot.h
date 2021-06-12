@@ -26,18 +26,15 @@ typedef enum {
 // Returns true if the keycode needs further handling, false otherwise.
 bool update_oneshot_modifiers(uint16_t keycode, keyrecord_t *record);
 
-// TO BE IMPLEMENTED BY THE COMSUMER
-// This function should return the keycode of the modifier to be triggered for a given (custom) keycode. 
+// TO BE IMPLEMENTED BY THE USER
+// This function should return one of the oneshot_mod enumerations (see keymap.c implementation)
 oneshot_mod get_modifier_for_trigger_key(uint16_t keycode); 
 
-// TO BE IMPLEMENTED BY THE COMSUMER
+// TO BE IMPLEMENTED BY THE USER
 // This function should return true for keycodes that must be ignored in the oneshot modifier behaviour.
 // You probably want to ignore layer keys. Trigger keys don't need to be specified here.
 bool is_oneshot_modifier_ignored_key(uint16_t keycode);
 
-// TO BE IMPLEMENTED BY THE COMSUMER
+// TO BE IMPLEMENTED BY THE USER
 // This function should return true for keycodes that should reset all oneshot modifiers.
 bool is_oneshot_modifier_cancel_key(uint16_t keycode);
-
-
-#endif
