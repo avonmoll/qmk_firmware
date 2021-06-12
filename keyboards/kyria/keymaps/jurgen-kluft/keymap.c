@@ -91,16 +91,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //#                                                ╰───────╯       │          │       ╰───────╯                                                 
     //#                                                        ╰───────╯          ╰───────╯                                                         
   [_QWERTY] = LAYOUT(
-    TG(_QWERTY_CAPS), KC_Q, KC_W, KC_E,      KC_R,            KC_T,                                                                 KC_Y,     KC_U,     KC_I,      KC_O,   KC_P,     TG(_QWERTY_CAPS), 
-    OSM(MOD_LSFT),    KC_A, KC_S, KC_D,      KC_F,            KC_G,                                                                 KC_H,     KC_J,     KC_K,      KC_L,   KC_SCLN,  KC_TRANS,         
-    KC_TRANS,         KC_Z, KC_X, KC_C,      KC_V,            KC_B,     KC_BSPACE, KC_SMART_NUMBER,   KC_SMART_CAPSLOCK, KC_BSPACE, KC_N,     KC_M,     KC_COMMA,  KC_DOT, KC_SLASH, KC_RSTHD,         
-                                  TG(_MOUS), KC_SMART_NUMBER, MO(_NAV), KC_SPACE,  KC_BSPACE,         KC_SMART_CAPSLOCK, KC_BSPACE, MO(_SYM), MO(_FNC), TG(_MOUS)                                      
+    KC_TRANS, KC_Q, KC_W, KC_E,      KC_R,            KC_T,                                                                 KC_Y,     KC_U,     KC_I,      KC_O,   KC_P,     KC_TRANS,
+    KC_TRANS, KC_A, KC_S, KC_D,      KC_F,            KC_G,                                                                 KC_H,     KC_J,     KC_K,      KC_L,   KC_SCLN,  KC_TRANS,
+    KC_TRANS, KC_Z, KC_X, KC_C,      KC_V,            KC_B,     KC_TRANS,  KC_TRANS,          KC_TRANS,          KC_TRANS,  KC_N,     KC_M,     KC_COMMA,  KC_DOT, KC_SLASH, KC_RSTHD,
+                          TG(_MOUS), KC_SMART_NUMBER, MO(_NAV), KC_SPACE,  KC_BSPACE,         KC_SMART_CAPSLOCK, KC_BSPACE, MO(_SYM), MO(_FNC), TG(_MOUS)                                      
   ),
   [_RSTHD] = LAYOUT(
-    TG(_RSTHD_CAPS), KC_J,    KC_C, KC_Y,      KC_F,            KC_K,                                                                 KC_Z,     KC_L,     KC_COMMA,  KC_U,    KC_Q,     TG(_RSTHD_CAPS), 
-    OSM(MOD_LSFT),   KC_R,    KC_S, KC_T,      KC_H,            KC_D,                                                                 KC_M,     KC_N,     KC_A,      KC_I,    KC_O,     KC_TRANS,        
-    KC_TRANS,        KC_SCLN, KC_V, KC_G,      KC_P,            KC_B,     KC_BSPACE, KC_SMART_NUMBER,   KC_SMART_CAPSLOCK, KC_BSPACE, KC_X,     KC_W,     KC_DOT,    KC_SCLN, KC_SLASH, KC_QWERTY,       
-                                    TG(_MOUS), KC_SMART_NUMBER, MO(_NAV), KC_SPACE,  KC_BSPACE,         KC_SMART_CAPSLOCK, KC_E,      MO(_SYM), MO(_FNC), TG(_MOUS)                                      
+    KC_TRANS, KC_J,    KC_C, KC_Y,      KC_F,            KC_K,                                                              KC_Z,     KC_L,     KC_BSPACE, KC_U,    KC_Q,     KC_TRANS,
+    KC_TRANS, KC_R,    KC_S, KC_T,      KC_H,            KC_D,                                                              KC_M,     KC_N,     KC_A,      KC_I,    KC_O,     KC_TRANS,
+    KC_TRANS, KC_SCLN, KC_V, KC_G,      KC_P,            KC_B,     KC_TRANS,  KC_TRANS,       KC_TRANS,          KC_TRANS,  KC_X,     KC_W,     KC_COMMA,  KC_DOT,  KC_SCLN,  KC_QWERTY,
+                             TG(_MOUS), KC_SMART_NUMBER, MO(_NAV), KC_SPACE,  KC_BSPACE,      KC_SMART_CAPSLOCK, KC_E,      MO(_SYM), MO(_FNC), TG(_MOUS)                                      
   ),
   [_QWERTY_CAPS] = LAYOUT(
     KC_TRANS, LSFT(KC_Q), LSFT(KC_W), LSFT(KC_E), LSFT(KC_R), LSFT(KC_T),                                           LSFT(KC_Y), LSFT(KC_U), LSFT(KC_I),     LSFT(KC_O),   LSFT(KC_P), KC_TRANS, 
@@ -210,7 +210,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
     process_record_oled(keycode, record);
 
     switch (keycode)
-    {
+    {        
         case KC_SMART_NUMBER:
             if (record->event.pressed)
             {
@@ -233,6 +233,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
             }
     }    
 
+    // The idea here is that we press and hold NAV and then press and release SYM we should activate
+    // SMART_NUMBERS.
+
     if ((smart_feature_cancel_key(keycode, record)) || (keycode < QK_MODS_MAX && !IS_MOD(keycode)))
     {
         if (smart_feature_state(SMART_CAPSLOCK))
@@ -252,6 +255,26 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
 
     switch (keycode)
     {
+        case MO(_NAV):
+            if (record->event.pressed)
+            {
+                // nav_layer_pressed = true;
+                // nav_layer_used = false;
+                // 
+            } else {
+                // if (!nav_layer_used) {
+                //    nav_layer_tapped += 1;
+                //    nav_layer_pressed = false;
+                //    if (nav_layer_tapped == 2) {
+                //        smart_feature_toggle(SMART_NUMBERS, _SMART_NUM);
+                //        nav_layer_tapped = 1;
+                //    }
+                // } else {
+                //    nav_layer_tapped  = 0;
+                //    nav_layer_pressed = false;
+                // }
+            }
+            break;
         case KC_QWERTY:
             if (record->event.pressed)
             {
