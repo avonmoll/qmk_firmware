@@ -20,27 +20,27 @@
 #define OS_MAC
 
 #ifdef OS_MAC
-    #define KC_UNDO KC_MAC_UNDO
-    #define KC_REDO KC_MAC_REDO
-    #define KC_CUT KC_MAC_CUT
-    #define KC_COPY KC_MAC_COPY
-    #define KC_PASTE KC_MAC_PASTE
-    #define KC_TRANS KC_TRANSPARENT
-    #define KC_NDT C(KC_RIGHT)
-    #define KC_PDT C(KC_LEFT)
-    #define KC_CLOSE LGUI(KC_W)
-    #define KC_SAVE LGUI(KC_S)
+#    define KC_UNDO KC_MAC_UNDO
+#    define KC_REDO KC_MAC_REDO
+#    define KC_CUT KC_MAC_CUT
+#    define KC_COPY KC_MAC_COPY
+#    define KC_PASTE KC_MAC_PASTE
+#    define KC_TRANS KC_TRANSPARENT
+#    define KC_NDT C(KC_RIGHT)
+#    define KC_PDT C(KC_LEFT)
+#    define KC_CLOSE LGUI(KC_W)
+#    define KC_SAVE LGUI(KC_S)
 #else
-    #define KC_UNDO KC_PC_UNDO
-    #define KC_REDO KC_PC_REDO
-    #define KC_CUT KC_PC_CUT
-    #define KC_COPY KC_PC_COPY
-    #define KC_PASTE KC_PC_PASTE
-    #define KC_TRANS KC_TRANSPARENT
-    #define KC_NDT LCTL(LGUI(KC_RIGHT))
-    #define KC_PDT LCTL(LGUI(KC_LEFT))
-    #define KC_CLOSE LCTL(KC_W)
-    #define KC_SAVE LCTL(KC_S)
+#    define KC_UNDO KC_PC_UNDO
+#    define KC_REDO KC_PC_REDO
+#    define KC_CUT KC_PC_CUT
+#    define KC_COPY KC_PC_COPY
+#    define KC_PASTE KC_PC_PASTE
+#    define KC_TRANS KC_TRANSPARENT
+#    define KC_NDT LCTL(LGUI(KC_RIGHT))
+#    define KC_PDT LCTL(LGUI(KC_LEFT))
+#    define KC_CLOSE LCTL(KC_W)
+#    define KC_SAVE LCTL(KC_S)
 #endif
 
 #define KC_DQUOTE LSFT(KC_QUOTE)
@@ -54,9 +54,7 @@
 #define LA_FNC MO(_FNC)
 #define LT_MOS TG(_MOUS)
 
-
-enum custom_keycodes
-{
+enum custom_keycodes {
     KC_QWERTY = SAFE_RANGE,
     KC_RSTHD,
     KC_OLED,
@@ -66,9 +64,9 @@ enum custom_keycodes
     OS_CMD,
     KC_SMART_CAPSLOCK,
     KC_SMART_NUMBER,
-    UC_SHRG,                        // ¯\_(ツ)_/¯
-    UC_DISA,                        // ಠ_ಠ
-    UC_LVIT,                        // ♥‿♥
+    UC_SHRG,  // ¯\_(ツ)_/¯
+    UC_DISA,  // ಠ_ಠ
+    UC_LVIT,  // ♥‿♥
 };
 
 // clang-format off
@@ -126,7 +124,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     UC_SHRG, KC_TRANS, KC_SLASH,  KC_LBRC,  KC_RBRC,  KC_CIRC,                                            KC_DQUO,  KC_LABK,  KC_RABK,  KC_UNDS,  KC_TILDE, KC_TRANS, 
     UC_DISA, KC_HASH,  KC_EQUAL,  KC_LCBR,  KC_RCBR,  KC_ASTR,                                            KC_PLUS,  KC_LPRN,  KC_RPRN,  KC_MINUS, KC_COLN,  KC_TRANS, 
     UC_LVIT, KC_DLR,   KC_BSLASH, KC_PIPE,  KC_AMPR,  KC_GRV,   KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_QUOT,  KC_PERC,  KC_EXLM,  KC_QUES,  KC_AT,    KC_TRANS, 
-                                  KC_TRANS, KC_TRANS, MO(_NUM), KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS                                
+                                  KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS                                
   ),
   [_NUM] = LAYOUT(
     KC_TRANS, KC_TRANS, KC_TRANS, KC_LBRACKET, KC_RBRACKET, KC_SLASH,                                           KC_MINUS, KC_LPRN,  KC_RPRN,  KC_TRANS, KC_TRANS, KC_TRANS, 
@@ -156,86 +154,87 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // clang-format on
 
 typedef enum {
-  htc_scanning,
-  htc_primary_pressed,
-  htc_secondary_pressed,
-  htc_secondary_released,
-  htc_primary_released,
-  htc_activated,
+    htc_scanning           = 0,
+    htc_primary_pressed    = 1,
+    htc_secondary_pressed  = 2,
+    htc_secondary_released = 4,
+    htc_primary_released   = 8,
+    htc_activated          = 0xF,
 } ehold_tap_combo_state;
 
-typedef struct {  
-  uint16_t              m_keycode_primary;
-  uint16_t              m_keycode_secondary;
-  ehold_tap_combo_state m_state;
+typedef enum {
+    htc_action_toggle_smartnum = 1,
+    htc_action_toggle_capsword = 2,
+} ehold_tap_combo_action;
+
+typedef struct {
+    uint16_t               m_keycode_primary;
+    uint16_t               m_keycode_secondary;
+    ehold_tap_combo_state  m_state;
+    ehold_tap_combo_action m_action;
 } hold_tap_combo_t;
 
-void process_htc(hold_tap_combo_t* htc, uint16_t keycode, keyrecord_t* record) {
-  if (htc->m_state == htc_scanning) {
-    if (record->event.pressed) {
-      if (keycode == htc->m_keycode_primary) {
-        htc->m_state = htc_primary_pressed;
-      }
-    }
-  } else if (htc->m_state == htc_primary_pressed) {
-    if (record->event.pressed) {
-      if (keycode == htc->m_keycode_secondary) {
-        htc->m_state = htc_secondary_pressed;
-      } else {
-        htc->m_state = htc_scanning;
-      }
-    } else {
-      htc->m_state = htc_scanning;
-    }
-  } else if (htc->m_state == htc_secondary_pressed) {
-    if (record->event.pressed) {
-      htc->m_state = htc_scanning;
-    } else {
-      if (keycode == htc->m_keycode_secondary) {
-        htc->m_state = htc_secondary_released;
-      } else if (keycode == htc->m_keycode_primary) {
-        htc->m_state = htc_primary_released;
-      }
-    }
-  } else if (htc->m_state == htc_primary_released) {
-    if (record->event.pressed) {
-      htc->m_state = htc_scanning;
+static hold_tap_combo_t htc_combo_smart_number = {.m_keycode_primary = LA_NAV, .m_keycode_secondary = LA_SYM, .m_state = htc_scanning, .m_action = htc_action_toggle_smartnum};
+static hold_tap_combo_t htc_combo_caps_word    = {.m_keycode_primary = LA_SYM, .m_keycode_secondary = LA_NAV, .m_state = htc_scanning, .m_action = htc_action_toggle_capsword};
+
+int8_t process_htc(hold_tap_combo_t* htc, uint16_t keycode, keyrecord_t* record, int8_t keycode_consumed) {
+    ehold_tap_combo_state state = 0;
+    if (keycode == htc->m_keycode_primary) {
+        if (record->event.pressed) {
+            state = htc_primary_pressed;
+        } else {
+            if (htc->m_state == htc_primary_pressed) {
+                state = htc_primary_released;
+            }
+        }
     } else if (keycode == htc->m_keycode_secondary) {
-      htc->m_state = htc_activated;
+        if (record->event.pressed) {
+            if (htc->m_state == (htc_primary_pressed | htc_primary_released)) {
+                state = htc_secondary_pressed;
+            }
+        } else {
+            if (htc->m_state == (htc_primary_pressed | htc_primary_released | htc_secondary_pressed)) {
+                state = htc_secondary_released;
+            }
+        }
     }
-  } else if (htc->m_state == htc_secondary_released) {
-    if (record->event.pressed) {
-      htc->m_state = htc_scanning;
-    } else if (keycode == htc->m_keycode_primary) {
-      htc->m_state = htc_activated;
+
+    if (state == 0 || keycode_consumed > 0) {
+        htc->m_state = 0;
+    } else {
+        htc->m_state |= state;
+        if (htc->m_state == htc_activated) {
+            // execute action
+            if (htc->m_action == htc_action_toggle_smartnum) {
+                smart_feature_toggle(SMART_NUMBERS, _SMART_NUM);
+            } else if (htc->m_action == htc_action_toggle_capsword) {
+                uint8_t layer = _QWERTY_CAPS;
+                if ((default_layer_state & (1 << _RSTHD)) != 0) layer = _RSTHD_CAPS;
+                smart_feature_toggle(SMART_CAPSLOCK, layer);
+            }
+
+            htc->m_state = htc_scanning;
+            return 1;
+        }
     }
-  }
 
-  if (htc->m_state == htc_activated) {
-    // execute action
-
-
-    htc->m_state = htc_scanning;
-  }
+    return 0;
 }
-
 
 #ifdef ENABLE_ONESHOT
 
-bool is_oneshot_modifier_cancel_key(uint16_t keycode)
-{
-    switch (keycode)
-    {
+bool is_oneshot_modifier_cancel_key(uint16_t keycode) {
+    switch (keycode) {
         case LA_FNC:
-        case LA_NAV: return true;
-        default: return false;
+        case LA_NAV:
+            return true;
+        default:
+            return false;
     }
 }
 
-bool is_oneshot_modifier_ignored_key(uint16_t keycode)
-{
-    switch (keycode)
-    {
+bool is_oneshot_modifier_ignored_key(uint16_t keycode) {
+    switch (keycode) {
         case LA_SYM:
         case LA_NAV:
         case LA_FNC:
@@ -246,24 +245,24 @@ bool is_oneshot_modifier_ignored_key(uint16_t keycode)
     return false;
 }
 
-oneshot_mod get_modifier_for_trigger_key(uint16_t keycode)
-{
-  switch(keycode)
-  {
-    case OS_SHFT: return ONESHOT_LSFT;
-    case OS_CTRL: return ONESHOT_LCTL;
-    case OS_ALT:  return ONESHOT_LALT;
-    case OS_CMD:  return ONESHOT_LGUI;
-  }
-  return ONESHOT_NONE;
+oneshot_mod get_modifier_for_trigger_key(uint16_t keycode) {
+    switch (keycode) {
+        case OS_SHFT:
+            return ONESHOT_LSFT;
+        case OS_CTRL:
+            return ONESHOT_LCTL;
+        case OS_ALT:
+            return ONESHOT_LALT;
+        case OS_CMD:
+            return ONESHOT_LGUI;
+    }
+    return ONESHOT_NONE;
 }
 
 #endif
 
-bool smart_feature_cancel_key(uint16_t keycode, keyrecord_t* recor)
-{
-    switch (keycode)
-    {
+bool smart_feature_cancel_key(uint16_t keycode, keyrecord_t* recor) {
+    switch (keycode) {
         case LA_SYM:
         case LA_NAV:
             return true;
@@ -271,85 +270,62 @@ bool smart_feature_cancel_key(uint16_t keycode, keyrecord_t* recor)
     return false;
 }
 
-bool process_record_user(uint16_t keycode, keyrecord_t* record)
-{
+bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     process_record_oled(keycode, record);
 
-    switch (keycode)
-    {        
+    switch (keycode) {
         case KC_SMART_NUMBER:
-            if (record->event.pressed)
-            {
+            if (record->event.pressed) {
                 smart_feature_toggle(SMART_NUMBERS, _SMART_NUM);
             }
             break;
         case KC_SMART_CAPSLOCK:
-            if (record->event.pressed)
-            {
+            if (record->event.pressed) {
                 uint8_t layer = _QWERTY_CAPS;
-                if ((default_layer_state & (1 << _RSTHD)) != 0)
-                    layer = _RSTHD_CAPS;
+                if ((default_layer_state & (1 << _RSTHD)) != 0) layer = _RSTHD_CAPS;
                 smart_feature_toggle(SMART_CAPSLOCK, layer);
             }
             break;
         case KC_OLED:
-            if (record->event.pressed){
+            if (record->event.pressed) {
                 toggle_display_oled();
                 rgblight_enable();
             }
-    }    
+    }
 
-    // The idea here is that we press and hold NAV and then press and release SYM we should activate
-    // SMART_NUMBERS.
+    // Some features below need to know if the keycode was consumed. For example: If NAV was used
+    // to cancel a MOD then HTC should return to its initial state.
+    // Also if NAV was used as a cancel key for a smart feature then it should not cancel anything
+    // in 'update_oneshot_modifiers'.
 
-    if ((smart_feature_cancel_key(keycode, record)) || (keycode < QK_MODS_MAX && !IS_MOD(keycode)))
-    {
-        if (smart_feature_state(SMART_CAPSLOCK))
-        {
+    int8_t keycode_consumed = 0;
+
+    if ((smart_feature_cancel_key(keycode, record)) || (keycode < QK_MODS_MAX && !IS_MOD(keycode))) {
+        if (smart_feature_state(SMART_CAPSLOCK)) {
+            keycode_consumed = 1;
             smart_capslock_process(keycode, record);
         }
-        if (smart_feature_state(SMART_NUMBERS))
-        {
+        if (smart_feature_state(SMART_NUMBERS)) {
+            keycode_consumed = 1;
             smart_numbers_process(keycode, record);
         }
     }
 
 #ifdef ENABLE_ONESHOT
-    if (!update_oneshot_modifiers(keycode, record))
-      return true;
+    keycode_consumed += update_oneshot_modifiers(keycode, record, keycode_consumed);
 #endif
 
-    switch (keycode)
-    {
-        case MO(_NAV):
-            if (record->event.pressed)
-            {
-                // nav_layer_pressed = true;
-                // nav_layer_used = false;
-                // 
-            } else {
-                // if (!nav_layer_used) {
-                //    nav_layer_tapped += 1;
-                //    nav_layer_pressed = false;
-                //    if (nav_layer_tapped == 2) {
-                //        smart_feature_toggle(SMART_NUMBERS, _SMART_NUM);
-                //        nav_layer_tapped = 1;
-                //    }
-                // } else {
-                //    nav_layer_tapped  = 0;
-                //    nav_layer_pressed = false;
-                // }
-            }
-            break;
+    keycode_consumed += process_htc(&htc_combo_smart_number, keycode, record, keycode_consumed);
+    keycode_consumed += process_htc(&htc_combo_caps_word, keycode, record, keycode_consumed);
+
+    switch (keycode) {
         case KC_QWERTY:
-            if (record->event.pressed)
-            {
+            if (record->event.pressed) {
                 set_single_persistent_default_layer(_QWERTY);
             }
             break;
         case KC_RSTHD:
-            if (record->event.pressed)
-            {
+            if (record->event.pressed) {
                 set_single_persistent_default_layer(_RSTHD);
             }
             break;
@@ -378,69 +354,67 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
 // Layer-specific encoder knob functions
 #ifdef ENCODER_ENABLE
 void encoder_update_user(uint8_t index, bool clockwise) {
-  uint16_t layers = (layer_state | default_layer_state);
-  if (index == 0) { // left knob
-    switch (get_highest_layer(layers)) {
-      case _SYM: // Desktop switching
-        if (clockwise) {
-          tap_code16(KC_NDT);
-        } else {
-          tap_code16(KC_PDT);
+    uint16_t layers = (layer_state | default_layer_state);
+    if (index == 0) {  // left knob
+        switch (get_highest_layer(layers)) {
+            case _SYM:  // Desktop switching
+                if (clockwise) {
+                    tap_code16(KC_NDT);
+                } else {
+                    tap_code16(KC_PDT);
+                }
+                break;
+            case _FNC:  // Mousewheel Up/Down
+                if (clockwise) {
+                    tap_code(KC_MS_WH_UP);
+                } else {
+                    tap_code(KC_MS_WH_DOWN);
+                }
+                break;
+            case _MOUS:  // Underglow color
+                if (clockwise) {
+                    rgblight_increase_hue();
+                } else {
+                    rgblight_decrease_hue();
+                }
+                break;
+            default:  // Volume Up/Down
+                if (clockwise) {
+                    tap_code(KC_VOLD);
+                } else {
+                    tap_code(KC_VOLU);
+                }
+                break;
         }
-        break;
-      case _FNC: // Mousewheel Up/Down
-        if (clockwise) {
-          tap_code(KC_MS_WH_UP);
-        } else {
-          tap_code(KC_MS_WH_DOWN);
+    } else if (index == 1) {  // right knob
+        switch (get_highest_layer(layers)) {
+            case _NAV:  // Undo/Redo
+                if (clockwise) {
+                    tap_code16(KC_UNDO);
+                } else {
+                    tap_code16(KC_REDO);
+                }
+                break;
+            case _MOUS:  // Underglow brightness
+                if (clockwise) {
+                    rgblight_increase_val();
+                } else {
+                    rgblight_decrease_val();
+                }
+                break;
+            default:  // Brightness Up/Down
+                if (clockwise) {
+                    tap_code(KC_BRIU);
+                } else {
+                    tap_code(KC_BRID);
+                }
+                break;
         }
-        break;
-      case _MOUS: // Underglow color
-        if (clockwise) {
-          rgblight_increase_hue();
-        } else {
-          rgblight_decrease_hue();
-        }
-        break;
-      default: // Volume Up/Down
-        if (clockwise) {
-          tap_code(KC_VOLD);
-        } else {
-          tap_code(KC_VOLU);
-        }
-        break;
+    } else {
+        tap_code16(S(KC_SLASH));
     }
-  } else if (index == 1) { // right knob
-    switch (get_highest_layer(layers)) {
-      case _NAV: // Undo/Redo
-        if (clockwise) {
-          tap_code16(KC_UNDO);
-        } else {
-          tap_code16(KC_REDO);
-        }
-        break;
-      case _MOUS: // Underglow brightness
-        if (clockwise) {
-          rgblight_increase_val();
-        } else {
-          rgblight_decrease_val();
-        }
-        break;
-      default: // Brightness Up/Down
-        if (clockwise) {
-          tap_code(KC_BRIU);
-        } else {
-          tap_code(KC_BRID);
-        }
-        break;
-    }
-  } else {
-      tap_code16(S(KC_SLASH));
-  }
 }
 #endif
-
-
 
 /*
 qmk-keyboard-format:json:begin
@@ -623,4 +597,3 @@ qmk-keyboard-format:json:begin
 }
 qmk-keyboard-format:json:end
 */
-
