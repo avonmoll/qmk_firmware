@@ -4,20 +4,22 @@
 
 // ----------------------------------------------------------------------------------------------------
 
-static uint8_t g_smart_status = 0;
-bool smart_feature_state(uint8_t f) { return (g_smart_status & (0xF << f)) != 0; }
+static uint8_t g_smart_status[2] = { 0, 0 };
+
+bool smart_feature_state(uint8_t f) { return (g_smart_status[f] != 0); }
 void smart_feature_disable(uint8_t f) {
-  uint8_t layer = (g_smart_status>>f) & 0xF;
+  uint8_t layer = g_smart_status[f];
   if (layer > 0)
   {
-    g_smart_status &= ~(0xF << f);
+    g_smart_status[f] = 0;
     layer_off(layer);
   }
 }
 
 void smart_feature_toggle(uint8_t f, uint8_t layer) { 
   if (!smart_feature_state(f)) {
-    g_smart_status = g_smart_status | (layer << f);
+    smart_feature_disable(1-f); // hack: turning on one smart feature turns off the other
+    g_smart_status[f] = layer;
     layer_on(layer);
   } else {
     smart_feature_disable(f);

@@ -4,7 +4,7 @@
 
 enum {
   SMART_CAPSLOCK = 0,
-  SMART_NUMBERS = 4
+  SMART_NUMBERS = 1
 };
 
 // ------ smart state -----------
