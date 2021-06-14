@@ -27,23 +27,27 @@ static uint16_t repeating_normal_key = 0;
 
 // utility functions (implemented at the bottom of this file)
 static void          set_modifier_state(oneshot_mod osmod, oneshot_state new_state);
-static void          set_modifier_state_all(oneshot_state new_state);
+static int8_t        set_modifier_state_all(oneshot_state new_state);
 static void          set_modifier_state_all_from_to(oneshot_state oneshot_state_from, oneshot_state oneshot_state_to);
 static bool          all_modifiers_are_off(void);
 
 // see comment in corresponding headerfile
-bool update_oneshot_modifiers(uint16_t keycode, keyrecord_t *record) {
+int8_t update_oneshot_modifiers(uint16_t keycode, keyrecord_t *record, int8_t keycode_consumed) {
     
     // cancel keys
     if (is_oneshot_modifier_cancel_key(keycode) && record->event.pressed) {
-        unapplied_mods_present = false;
-        set_modifier_state_all(ONESHOT_STATE_OFF);
-        return true;
+        if (keycode_consumed == 0) {
+            unapplied_mods_present = false;
+            keycode_consumed += set_modifier_state_all(ONESHOT_STATE_OFF);
+        } else {
+            keycode_consumed = 0;
+        }
+        return keycode_consumed;
     }
 
     // ignored keys
     if (is_oneshot_modifier_ignored_key(keycode)) {
-        return true;
+        return keycode_consumed;
     }
 
     oneshot_mod osmod = get_modifier_for_trigger_key(keycode);
@@ -90,7 +94,7 @@ bool update_oneshot_modifiers(uint16_t keycode, keyrecord_t *record) {
         }
     }
 
-    return true;
+    return 0;
 }
 
 // implementation of utility functions
@@ -114,14 +118,17 @@ void set_modifier_state(oneshot_mod osmod, oneshot_state new_state) {
     }
 }
 
-void set_modifier_state_all(oneshot_state new_state) {
+int8_t set_modifier_state_all(oneshot_state new_state) {
+    int8_t c = 0;
     for (int8_t i = 0; i < ONESHOT_MOD_COUNT; i++) {
         oneshot_state previous_state = modifiers_with_state[i];
         if (previous_state != new_state) {
             modifiers_with_state[i] = new_state;
             update_modifier(i, previous_state, new_state);
+            c += 1;
         }
     }
+    return c;
 }
 
 void set_modifier_state_all_from_to(oneshot_state oneshot_state_from, oneshot_state oneshot_state_to) {

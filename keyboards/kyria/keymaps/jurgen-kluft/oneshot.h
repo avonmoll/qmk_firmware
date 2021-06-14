@@ -24,7 +24,7 @@ typedef enum {
 
 // This function should be called inside proces_record_user and does everything needed to get one shot modifiers working.
 // Returns true if the keycode needs further handling, false otherwise.
-bool update_oneshot_modifiers(uint16_t keycode, keyrecord_t *record);
+int8_t update_oneshot_modifiers(uint16_t keycode, keyrecord_t *record, int8_t keycode_consumed);
 
 // TO BE IMPLEMENTED BY THE USER
 // This function should return one of the oneshot_mod enumerations (see keymap.c implementation)
