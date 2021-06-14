@@ -43,6 +43,8 @@ void smart_capslock_process(uint16_t keycode, keyrecord_t *record) {
       case KC_BSPC:
       case KC_DEL:
       case KC_UNDS:
+      case KC_AT:
+      case KC_DOT:
       case KC_MINS:
         if (record->event.pressed && (get_mods() != 0)) {
           keycode = KC_NO;
