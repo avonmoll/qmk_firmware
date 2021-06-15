@@ -36,27 +36,21 @@ void smart_feature_toggle(uint8_t f, uint8_t layer) {
 void smart_capslock_process(uint16_t keycode, keyrecord_t *record) {
 
   if (smart_feature_state(SMART_CAPSLOCK)) {
+    if (record->event.pressed) {
+      switch (keycode) {
+        case KC_SCLN:
+        case SKC_A ... SKC_Z:
+        case KC_BSPC:
+        case KC_DEL:
+        case KC_UNDS:
+        case KC_AT:
+        case KC_DOT:
+        case KC_MINS:
+          if (get_mods() == 0) {
+            return;
+          }
+      }
 
-    switch (keycode) {
-      case KC_SCLN:
-      case SKC_A ... SKC_Z:
-      case KC_BSPC:
-      case KC_DEL:
-      case KC_UNDS:
-      case KC_AT:
-      case KC_DOT:
-      case KC_MINS:
-        if (record->event.pressed && (get_mods() != 0)) {
-          keycode = KC_NO;
-        }
-        break;
-      default:
-        if (record->event.pressed) {
-          keycode = KC_NO;
-        }
-    }
-
-    if (keycode == KC_NO) {
       smart_feature_disable(SMART_CAPSLOCK);
     }
   }
@@ -69,32 +63,26 @@ void smart_capslock_process(uint16_t keycode, keyrecord_t *record) {
 void smart_numbers_process(uint16_t keycode, keyrecord_t *record) {
 
   if (smart_feature_state(SMART_NUMBERS)) {
+    if (record->event.pressed) {
+      switch (keycode) {
+        case KC_1...KC_0:
+        case KC_RBRACKET:
+        case KC_LBRACKET:
+        case KC_LPRN:
+        case KC_RPRN:
+        case KC_BSPC:
+        case KC_DEL:
+        case KC_UNDS:
+        case KC_MINS:
+        case KC_PLUS:
+        case KC_ASTR:
+        case KC_EQL:
+        case KC_SLSH:
+        case KC_DOT:
+        case KC_COMMA:
+          return;
+      }
 
-    switch (keycode) {
-      case KC_1...KC_0:
-      case KC_RBRACKET:
-      case KC_LBRACKET:
-      case KC_LPRN:
-      case KC_RPRN:
-      case KC_BSPC:
-      case KC_DEL:
-      case KC_UNDS:
-      case KC_MINS:
-      case KC_PLUS:
-      case KC_ASTR:
-      case KC_EQL:
-      case KC_SLSH:
-      case KC_DOT:
-      case KC_COMMA:
-        break;
-      default:
-          if (record->event.pressed) {
-              keycode = KC_NO;        
-          }
-          break;
-    }
-
-    if (keycode == KC_NO) {
       smart_feature_disable(SMART_NUMBERS);
     }
   }
