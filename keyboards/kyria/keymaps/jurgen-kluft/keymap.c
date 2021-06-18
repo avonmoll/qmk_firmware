@@ -121,10 +121,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
   // Symbols in order of frequency # | & { } , ? [ ] _ < > $ % ` ' / - 0 : \ 1 ( ) = ^ ~ " 6 7 8 ! . 9 + @ * 2 3 4 5 
   [_SYM] = LAYOUT(
-    UC_SHRG, KC_TRANS, KC_SLASH,  KC_LBRC,  KC_RBRC,  KC_CIRC,                                                   KC_DQUO,  KC_LABK,  KC_RABK,  KC_UNDS,  KC_TILDE, KC_TRANS, 
-    UC_DISA, KC_HASH,  KC_EQUAL,  KC_LCBR,  KC_RCBR,  KC_ASTR,                                                   KC_PLUS,  KC_LPRN,  KC_RPRN,  KC_MINUS, KC_COLN,  KC_TRANS, 
-    UC_LVIT, KC_DLR,   KC_BSLASH, KC_PIPE,  KC_AMPR,  KC_GRV,          KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_QUOT,  KC_PERC,  KC_EXLM,  KC_QUES,  KC_AT,    KC_TRANS, 
-                                  KC_TRANS, KC_TRANS, KC_SMART_NUMBER, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS                                
+    UC_SHRG, KC_TRANS, KC_SLASH,  KC_LBRC,  KC_RBRC,  KC_CIRC,                                            KC_DQUO,  KC_LABK,  KC_RABK,  KC_UNDS,  KC_TILDE, KC_TRANS, 
+    UC_DISA, KC_HASH,  KC_EQUAL,  KC_LCBR,  KC_RCBR,  KC_ASTR,                                            KC_PLUS,  KC_LPRN,  KC_RPRN,  KC_MINUS, KC_COLN,  KC_TRANS, 
+    UC_LVIT, KC_DLR,   KC_BSLASH, KC_PIPE,  KC_AMPR,  KC_GRV,   KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_QUOT,  KC_PERC,  KC_EXLM,  KC_QUES,  KC_AT,    KC_TRANS, 
+                                  KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS                                
   ),
   [_NUM] = LAYOUT(
     KC_TRANS, KC_TRANS, KC_TRANS, KC_LBRACKET, KC_RBRACKET, KC_SLASH,                                           KC_MINUS, KC_LPRN,  KC_RPRN,  KC_TRANS, KC_TRANS, KC_TRANS, 
@@ -133,10 +133,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                   KC_TRANS,    KC_TRANS,    KC_TRANS, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS                                
   ),
   [_NAV] = LAYOUT(
-    KC_TRANS, KC_TRANS, KC_CLOSE, KC_ESCAPE, KC_ENTER, KC_TAB,                                            KC_INSERT,         KC_PGUP,   KC_HOME,  KC_TRANS, KC_TRANS, KC_TRANS, 
-    KC_TRANS, OS_CMD,   OS_ALT,   OS_CTRL,   OS_SHFT,  KC_DELETE,                                         KC_LEFT,           KC_DOWN,   KC_UP,    KC_RIGHT, KC_TRANS, KC_TRANS, 
-    KC_TRANS, KC_UNDO,  KC_CUT,   KC_COPY,   KC_PASTE, KC_BSPACE, KC_TRANS, KC_TRANS,   KC_PDT, KC_TRANS, KC_TRANS,          KC_PGDOWN, KC_END,   KC_TRANS, KC_TRANS, KC_TRANS, 
-                                  KC_TRANS,  KC_TRANS, KC_TRANS,  KC_TRANS, KC_TRANS,   KC_NDT, KC_TRANS, KC_SMART_CAPSLOCK, KC_TRANS,  KC_TRANS                                
+    KC_TRANS, KC_TRANS, KC_CLOSE, KC_ESCAPE, KC_ENTER, KC_TAB,                                            KC_INSERT, KC_PGUP,   KC_HOME,  KC_TRANS, KC_TRANS, KC_TRANS, 
+    KC_TRANS, OS_CMD,   OS_ALT,   OS_CTRL,   OS_SHFT,  KC_DELETE,                                         KC_LEFT,   KC_DOWN,   KC_UP,    KC_RIGHT, KC_TRANS, KC_TRANS, 
+    KC_TRANS, KC_UNDO,  KC_CUT,   KC_COPY,   KC_PASTE, KC_BSPACE, KC_TRANS, KC_TRANS,   KC_PDT, KC_TRANS, KC_TRANS,  KC_PGDOWN, KC_END,   KC_TRANS, KC_TRANS, KC_TRANS, 
+                                  KC_TRANS,  KC_TRANS, KC_TRANS,  KC_TRANS, KC_TRANS,   KC_NDT, KC_TRANS, KC_TRANS,  KC_TRANS,  KC_TRANS                                
   ),
   [_FNC] = LAYOUT(
     KC_TRANS, KC_F12, KC_F11, KC_F10,   KC_F9,    KC_TRANS,                                           KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, 
@@ -149,8 +149,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     MU_TOG,   KC_LGUI,  KC_LALT,  KC_LCTL,  KC_LSFT,  KC_TRANS,                                           KC_MS_WH_DOWN, KC_MS_LEFT,    KC_MS_DOWN, KC_MS_RIGHT,    RGB_HUI, RGB_HUD, 
     KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS,      KC_MS_WH_LEFT, KC_MS_BTN3, KC_MS_WH_RIGHT, RGB_VAI, RGB_VAD, 
                                   KC_TRANS, KC_TRANS, KC_TRANS, KC_PDT,   KC_NDT,     KC_TRANS, KC_TRANS, KC_TRANS,      KC_TRANS,      KC_TRANS                                      
+  ),
+  [_RAISE] = LAYOUT(
+    KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS,          KC_TRANS,                                           KC_TRANS, KC_TRANS,        KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, 
+    KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_SMART_CAPSLOCK, KC_TRANS,                                           KC_TRANS, KC_SMART_NUMBER, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, 
+    KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS,          KC_TRANS, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS,        KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, 
+                                  KC_TRANS, KC_TRANS,          KC_TRANS, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS,        KC_TRANS                                
   )
 };
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+    return update_tri_layer_state(state, _NAV, _SYM, _RAISE);
+}
+
 // clang-format on
 typedef enum {
     htc_scanning           = 0,
