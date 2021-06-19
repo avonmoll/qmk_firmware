@@ -164,7 +164,7 @@ void render_keylock_status(uint8_t led_usb_state) {
                 oled_write_P(PSTR("-SYMB "), false);
                 count += 1;
             }
-            else if (layer == _NUM || layer == _SMART_NUM)
+            else if (layer == _NUM)
             {
                 oled_write_P(PSTR("-NUMB "), false);
                 count += 1;
@@ -182,6 +182,11 @@ void render_keylock_status(uint8_t led_usb_state) {
             else if (layer == _MOUS)
             {
                 oled_write_P(PSTR("-MOUS "), false);
+                count += 1;
+            }
+            else if (layer == _RAISE)
+            {
+                oled_write_P(PSTR("-RAIS "), false);
                 count += 1;
             }
         }
