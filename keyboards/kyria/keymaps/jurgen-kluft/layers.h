@@ -11,5 +11,6 @@ enum layers {
     _NAV,
     _FNC,
     _MOUS,
-    _RAISE
+    _RAISE,
+    _NUM_LAYERS
 };

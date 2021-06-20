@@ -140,6 +140,8 @@ void render_layer_state(void){
 	}
 }
 
+PROGMEM char const layer_names[] = "-QWERT\0\0-RSTHD\0\0-CAPS \0\0-CAPS \0\0-NUMB \0\0-SYMB \0\0-NAVI \0\0-FUNC \0\0-MOUS \0\0-RAIS ";
+
 // Keylock State			
 void render_keylock_status(uint8_t led_usb_state) {
 	//oled_write_P(led_usb_state & (1<<USB_LED_NUM_LOCK) ? PSTR("-NUML") : PSTR("-----"), false);
@@ -150,49 +152,22 @@ void render_keylock_status(uint8_t led_usb_state) {
 	//oled_write_P(PSTR(" "), false);	
 
     oled_write_P(PSTR(" "), false);
+
     // Host Keyboard Layer Status
-    uint16_t layers = (layer_state | default_layer_state);
+    uint16_t layers = layer_state;
+
+    // Remove NAVI and SYMB layers when RAIS is active
+    if ((layers & (1<<_RAISE)) != 0) {
+        layers &= ~((1<<_SYM) | (1<<_NAV));
+    }
+
     uint16_t count = 0;
-    for (int i = 0; i < 16; i++)
+    for (int8_t i = 0; i < 16; i++)
     {
         if ((layers & 1) != 0)
         {
-            const uint16_t layer = i;
-            if (layer == _RSTHD_CAPS || layer == _QWERTY_CAPS)
-            {
-                oled_write_P(PSTR("-CAPS "), false);
-                count += 1;
-            }
-            else if (layer == _SYM)
-            {
-                oled_write_P(PSTR("-SYMB "), false);
-                count += 1;
-            }
-            else if (layer == _NUM)
-            {
-                oled_write_P(PSTR("-NUMB "), false);
-                count += 1;
-            }
-            else if (layer == _NAV)
-            {
-                oled_write_P(PSTR("-NAVI "), false);
-                count += 1;
-            }
-            else if (layer == _FNC)
-            {
-                oled_write_P(PSTR("-FUNC "), false);
-                count += 1;
-            }
-            else if (layer == _MOUS)
-            {
-                oled_write_P(PSTR("-MOUS "), false);
-                count += 1;
-            }
-            else if (layer == _RAISE)
-            {
-                oled_write_P(PSTR("-RAIS "), false);
-                count += 1;
-            }
+            oled_write_P(&layer_names[i<<3], false);
+            count += 1;
         }
         layers = layers >> 1;
         if (count == 3)
