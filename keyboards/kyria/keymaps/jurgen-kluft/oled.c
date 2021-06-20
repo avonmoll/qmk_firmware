@@ -115,13 +115,17 @@ void render_skeeb_logo(void) {
 void render_mod_status(uint8_t modifiers) {
 	oled_write_P(PSTR(" "), false);	
 	oled_write_P(PSTR("-"), false);
-    oled_write_P(PSTR("SHF"), (modifiers & MOD_MASK_SHIFT));
+#ifdef OS_MAC
+	oled_write_P(PSTR("GUI"), (modifiers & MOD_MASK_GUI));
+#else
+	oled_write_P(PSTR("WIN"), (modifiers & MOD_MASK_GUI));
+#endif
+	oled_write_P(PSTR("-"), false);
+    oled_write_P(PSTR("ALT"), (modifiers & MOD_MASK_ALT));
 	oled_write_P(PSTR("-"), false);
     oled_write_P(PSTR("CTR"), (modifiers & MOD_MASK_CTRL));
 	oled_write_P(PSTR("-"), false);
-	oled_write_P(PSTR("WIN"), (modifiers & MOD_MASK_GUI));
-	oled_write_P(PSTR("-"), false);
-    oled_write_P(PSTR("ALT"), (modifiers & MOD_MASK_ALT));
+    oled_write_P(PSTR("SHF"), (modifiers & MOD_MASK_SHIFT));
     oled_write_P(PSTR("-"), false);
 	oled_write_P(PSTR(" "), false);	
 }
@@ -195,9 +199,34 @@ void render_keylock_status(uint8_t led_usb_state) {
             break;
     }
 
-    for ( ; count < 3; count++)
-    {
-	    oled_write_P(PSTR("----- "), false);	
+    if (count < 3) {
+#ifdef WPM_ENABLE
+        uint8_t n = get_current_wpm();
+        char wpm_counter[6];
+        wpm_counter[5] = '\0';
+        wpm_counter[4] = ' ';
+        wpm_counter[3] = ' ';
+        wpm_counter[2] = '0' + n % 10;
+        wpm_counter[1] = ( n /= 10) % 10 ? '0' + (n) % 10 : (n / 10) % 10 ? '0' : ' ';
+        wpm_counter[0] = n / 10 ? '0' + n / 10 : ' ';
+        if (wpm_counter[0]==' ') {
+            if (wpm_counter[1]==' ') {
+                oled_write(&wpm_counter[2], false);            
+            } else {
+                wpm_counter[4] = '\0';
+                oled_write(&wpm_counter[1], false);
+            }
+        } else {
+            wpm_counter[3] = '\0';
+            oled_write(&wpm_counter[0], false);
+        }
+        oled_write_P(PSTR("-- "), false);	
+        count += 1;
+#endif
+        for ( ; count < 3; count++)
+        {
+            oled_write_P(PSTR("----- "), false);	
+        }
     }
 }
 

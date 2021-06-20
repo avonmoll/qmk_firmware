@@ -17,8 +17,6 @@
 #define KC_PC_COPY LCTL(KC_C)
 #define KC_PC_PASTE LCTL(KC_V)
 
-#define OS_MAC
-
 #ifdef OS_MAC
 #    define KC_UNDO KC_MAC_UNDO
 #    define KC_REDO KC_MAC_REDO
