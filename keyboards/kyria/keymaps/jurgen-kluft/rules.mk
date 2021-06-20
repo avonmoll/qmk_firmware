@@ -1,6 +1,6 @@
 # Disable unused features
 VIA_ENABLE = no
-WPM_ENABLE = no
+WPM_ENABLE = yes
 NKRO_ENABLE = no
 AUDIO_ENABLE = no
 STENO_ENABLE = no
