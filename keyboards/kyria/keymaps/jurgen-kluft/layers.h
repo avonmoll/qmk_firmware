@@ -9,8 +9,7 @@ enum layers {
     _NUM,
     _SYM,
     _NAV,
-    _FNC,
-    _MOUS,
     _RAISE,
+    _MOUS,
     _NUM_LAYERS
 };

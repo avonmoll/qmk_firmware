@@ -49,7 +49,6 @@
 
 #define LA_SYM MO(_SYM)
 #define LA_NAV MO(_NAV)
-#define LA_FNC MO(_FNC)
 #define LT_MOS TG(_MOUS)
 
 enum custom_keycodes {
@@ -79,25 +78,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //# │       │   A   ╰───────╯   C   ╰───────╯       │                                        │       ╰───────╯   ,   ╰───────╯   ;   │       │  
     //# │       │       │   X   │       │   V   ╰───────╯                                        ╰───────╯   M   │       │   .   │       │       │  
     //# ╰───────╯───────╯       ╰───────╯       │   B   │ ╭───────╮                    ╭───────╮ │   N   │       ╰───────╯       ╰───────╰───────╯  
-    //# │       │   Z   ╰───────╯       ╰───────╯       │ │       ╰───────╮    ╭───────╯       │ │       ╰───────╯       ╰───────╯   /   │ RSTHD │  
+    //# │       │   Z   ╰───────╯       ╰───────╯       │ │ C_PDT ╰───────╮    ╭───────╯ C_NDT │ │       ╰───────╯       ╰───────╯   /   │ RSTHD │  
     //# │       │       │              ╭───────╮╰───────╯ │       │       │    │       │       │ ╰───────╯╭───────╮              │       │       │  
-    //# ╰───────╯───────╯     ╭───────╮│       ╰───────╮  ╰───────╯       │    │       ╰───────╯  ╭───────╯ A_FNC │╭───────╮     ╰───────╰───────╯  
+    //# ╰───────╯───────╯     ╭───────╮│ SMNUM ╰───────╮  ╰───────╯       │    │       ╰───────╯  ╭───────╯ SMCAP │╭───────╮     ╰───────╰───────╯  
     //#                       │ T_MOS ││       │ A_NAV ╰───────╮  ╰───────╯    ╰───────╯  ╭───────╯ A_SYM │       ││ T_MOS │                        
     //#                       │       │╰───────╯       │ SPACE ╰───────╮          ╭───────╯   ⌫   │       ╰───────╯│       │                        
     //#                       ╰encodr─╯        ╰───────╯       │       │          │       │       ╰───────╯        ╰encodr─╯                        
     //#                                                ╰───────╯       │          │       ╰───────╯                                                 
     //#                                                        ╰───────╯          ╰───────╯                                                         
   [_QWERTY] = LAYOUT(
-    KC_TRANS, KC_Q, KC_W, KC_E,   KC_R,     KC_T,                                              KC_Y,   KC_U,   KC_I,     KC_O,   KC_P,     KC_TRANS, 
-    KC_TRANS, KC_A, KC_S, KC_D,   KC_F,     KC_G,                                              KC_H,   KC_J,   KC_K,     KC_L,   KC_SCLN,  KC_TRANS, 
-    KC_TRANS, KC_Z, KC_X, KC_C,   KC_V,     KC_B,   KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS,  KC_N,   KC_M,   KC_COMMA, KC_DOT, KC_SLASH, KC_RSTHD, 
-                          LT_MOS, KC_TRANS, LA_NAV, KC_SPACE, KC_TRANS,   KC_TRANS, KC_BSPACE, LA_SYM, LA_FNC, LT_MOS                                
+    KC_TRANS, KC_Q, KC_W, KC_E,   KC_R,            KC_T,                                              KC_Y,   KC_U,              KC_I,     KC_O,   KC_P,     KC_TRANS, 
+    KC_TRANS, KC_A, KC_S, KC_D,   KC_F,            KC_G,                                              KC_H,   KC_J,              KC_K,     KC_L,   KC_SCLN,  KC_TRANS, 
+    KC_TRANS, KC_Z, KC_X, KC_C,   KC_V,            KC_B,   KC_PDT,   KC_TRANS,   KC_TRANS, KC_NDT,    KC_N,   KC_M,              KC_COMMA, KC_DOT, KC_SLASH, KC_RSTHD, 
+                          LT_MOS, KC_SMART_NUMBER, LA_NAV, KC_SPACE, KC_TRANS,   KC_TRANS, KC_BSPACE, LA_SYM, KC_SMART_CAPSLOCK, LT_MOS                                
   ),
   [_RSTHD] = LAYOUT(
-    KC_TRANS, KC_J,    KC_C, KC_Y,   KC_F,     KC_K,                                             KC_Z,   KC_L,   KC_BSPACE, KC_U,   KC_Q,    KC_TRANS,  
-    KC_TRANS, KC_R,    KC_S, KC_T,   KC_H,     KC_D,                                             KC_M,   KC_N,   KC_A,      KC_I,   KC_O,    KC_TRANS,  
-    KC_TRANS, KC_SCLN, KC_V, KC_G,   KC_P,     KC_B,   KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_X,   KC_W,   KC_COMMA,  KC_DOT, KC_SCLN, KC_QWERTY, 
-                             LT_MOS, KC_TRANS, LA_NAV, KC_SPACE, KC_TRANS,   KC_TRANS, KC_E,     LA_SYM, LA_FNC, LT_MOS                                 
+    KC_TRANS, KC_J,    KC_C, KC_Y,   KC_F,            KC_K,                                             KC_Z,   KC_L,              KC_BSPACE, KC_U,   KC_Q,    KC_TRANS,  
+    KC_TRANS, KC_R,    KC_S, KC_T,   KC_H,            KC_D,                                             KC_M,   KC_N,              KC_A,      KC_I,   KC_O,    KC_TRANS,  
+    KC_TRANS, KC_SCLN, KC_V, KC_G,   KC_P,            KC_B,   KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_X,   KC_W,              KC_COMMA,  KC_DOT, KC_SCLN, KC_QWERTY, 
+                             LT_MOS, KC_SMART_NUMBER, LA_NAV, KC_SPACE, KC_TRANS,   KC_TRANS, KC_E,     LA_SYM, KC_SMART_CAPSLOCK, LT_MOS                                 
   ),
   [_QWERTY_CAPS] = LAYOUT(
     KC_TRANS, LSFT(KC_Q), LSFT(KC_W), LSFT(KC_E), LSFT(KC_R), LSFT(KC_T),                                           LSFT(KC_Y), LSFT(KC_U), LSFT(KC_I), LSFT(KC_O), LSFT(KC_P), KC_TRANS, 
@@ -130,7 +129,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_TRANS, KC_UNDO,  KC_CUT,   KC_COPY,   KC_PASTE, KC_BSPACE, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS,  KC_PGDOWN, KC_END,   KC_TRANS, KC_TRANS, KC_TRANS, 
                                   KC_TRANS,  KC_TRANS, KC_TRANS,  KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS,  KC_TRANS,  KC_TRANS                                
   ),
-  [_FNC] = LAYOUT(
+  [_RAISE] = LAYOUT(
     KC_TRANS, KC_F12, KC_F11, KC_F10,   KC_F9,    KC_TRANS,                                           KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, 
     KC_TRANS, KC_F8,  KC_F7,  KC_F6,    KC_F5,    KC_TRANS,                                           KC_TRANS, OS_SHFT,  OS_CTRL,  OS_ALT,   OS_CMD,   KC_TRANS, 
     KC_TRANS, KC_F4,  KC_F3,  KC_F2,    KC_F1,    KC_TRANS, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, 
@@ -141,12 +140,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     MU_TOG,   KC_LGUI,  KC_LALT,  KC_LCTL,  KC_LSFT,  KC_TRANS,                                           KC_MS_WH_DOWN, KC_MS_LEFT,    KC_MS_DOWN, KC_MS_RIGHT,    RGB_HUI, RGB_HUD, 
     KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS,      KC_MS_WH_LEFT, KC_MS_BTN3, KC_MS_WH_RIGHT, RGB_VAI, RGB_VAD, 
                                   KC_TRANS, KC_TRANS, KC_TRANS, KC_PDT,   KC_NDT,     KC_TRANS, KC_TRANS, KC_TRANS,      KC_TRANS,      KC_TRANS                                      
-  ),
-  [_RAISE] = LAYOUT(
-    KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS,          KC_TRANS,                                           KC_TRANS, KC_TRANS,        KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, 
-    KC_TRANS, KC_TRANS, KC_TRANS, KC_PDT,   KC_SMART_CAPSLOCK, KC_TRANS,                                           KC_TRANS, KC_SMART_NUMBER, KC_NDT,   KC_TRANS, KC_TRANS, KC_TRANS, 
-    KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS,          KC_TRANS, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS,        KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, 
-                                  KC_TRANS, KC_TRANS,          KC_TRANS, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS,        KC_TRANS                                
   )
 };
 // clang-format on
@@ -159,7 +152,6 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 
 bool is_oneshot_modifier_cancel_key(uint16_t keycode) {
     switch (keycode) {
-        case LA_FNC:
         case LA_NAV:
             return true;
         default:
@@ -171,8 +163,6 @@ bool is_oneshot_modifier_ignored_key(uint16_t keycode) {
     switch (keycode) {
         case LA_SYM:
         case LA_NAV:
-        case LA_FNC:
-        case KC_LSFT:
         case KC_SMART_NUMBER:
             return true;
     }
@@ -292,13 +282,6 @@ void encoder_update_user(uint8_t index, bool clockwise) {
                     tap_code16(KC_NDT);
                 } else {
                     tap_code16(KC_PDT);
-                }
-                break;
-            case _FNC:  // Mousewheel Up/Down
-                if (clockwise) {
-                    tap_code(KC_MS_WH_UP);
-                } else {
-                    tap_code(KC_MS_WH_DOWN);
                 }
                 break;
             case _MOUS:  // Underglow color
