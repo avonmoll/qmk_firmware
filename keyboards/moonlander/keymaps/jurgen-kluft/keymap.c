@@ -32,6 +32,7 @@
 enum custom_keycodes
 {
     RGB_SLD = ML_SAFE_RANGE,
+    KC_PASSWORD,
     KC_QWERTY,
     KC_RSTHD,
     KC_OLED,
@@ -49,7 +50,7 @@ enum custom_keycodes
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_QWERTY] = LAYOUT(
-   KC_TRNS,       KC_TRNS, KC_TRNS,   KC_TRNS,         KC_TRNS,  KC_TRNS,   KC_TRNS,   KC_TRNS, KC_TRNS,           KC_TRNS,   KC_TRNS,  KC_TRNS, TG(_MOUS), TG(_GAMEL),        
+   KC_TRNS,       KC_TRNS, KC_TRNS,   KC_TRNS,         KC_TRNS,  KC_TRNS,   KC_TRNS,   KC_TRNS, KC_PASSWORD,           KC_TRNS,   KC_TRNS,  KC_TRNS, TG(_MOUS), TG(_GAMEL),        
    KC_TRNS,       KC_Q,    KC_W,      KC_E,            KC_R,     KC_T,      KC_NDT,    KC_PDT,  KC_Y,              KC_U,      KC_I,     KC_O,    KC_P,      KC_TRNS,           
    KC_TRNS,       KC_A,    KC_S,      KC_D,            KC_F,     KC_G,      KC_PDT,    KC_NDT,  KC_H,              KC_J,      KC_K,     KC_L,    KC_SCOLON, KC_TRNS, 
    KC_TRNS,       KC_Z,    KC_X,      KC_C,            KC_V,     KC_B,                          KC_N,              KC_M,      KC_COMMA, KC_DOT,  KC_SLASH,  KC_TRNS,           
@@ -57,7 +58,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                        KC_SPACE, KC_BSPACE, KC_TRNS,   KC_TRNS, KC_TRNS,           KC_BSPACE                                                   
   ),
   [_RSTHD] = LAYOUT(
-   KC_TRNS,       KC_TRNS, KC_TRNS, KC_TRNS,         KC_TRNS,  KC_TRNS,   KC_TRNS,   KC_TRNS, KC_TRNS,           KC_TRNS,  KC_TRNS,   KC_TRNS,   TG(_MOUS), TG(_GAMEL),        
+   KC_TRNS,       KC_TRNS, KC_TRNS, KC_TRNS,         KC_TRNS,  KC_TRNS,   KC_TRNS,   KC_TRNS, KC_PASSWORD,           KC_TRNS,  KC_TRNS,   KC_TRNS,   TG(_MOUS), TG(_GAMEL),        
    KC_TRNS,       KC_J,    KC_C,    KC_Y,            KC_F,     KC_K,      KC_NDT,    KC_PDT,  KC_Z,              KC_L,     KC_BSPACE, KC_U,      KC_Q,      KC_TRNS,           
    KC_TRNS,       KC_R,    KC_S,    KC_T,            KC_H,     KC_D,      KC_PDT,    KC_NDT,  KC_M,              KC_N,     KC_A,      KC_I,      KC_O,      KC_TRNS, 
    KC_TRNS,       KC_UNDS, KC_V,    KC_G,            KC_P,     KC_B,                          KC_X,              KC_W,     KC_COMMA,  KC_DOT,    KC_SCLN,   KC_TRNS,           
@@ -259,10 +260,13 @@ bool smart_feature_cancel_key(uint16_t keycode, keyrecord_t* recor) {
 }
 
 
-bool process_record_user(uint16_t keycode, keyrecord_t* record)
-{
-
+bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     switch (keycode) {
+        case KC_PASSWORD:
+            if (record->event.pressed) {
+                SEND_STRING("SP00NS_and_");
+            }
+            break;
         case KC_SMART_NUMBER:
             if (record->event.pressed) {
                 smart_feature_toggle(SMART_NUMBERS, _NUM);

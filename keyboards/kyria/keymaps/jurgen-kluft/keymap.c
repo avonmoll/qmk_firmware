@@ -17,7 +17,7 @@
 #define KC_PC_COPY LCTL(KC_C)
 #define KC_PC_PASTE LCTL(KC_V)
 
-#define OS_MAC
+//#define OS_MAC
 
 #ifdef OS_MAC
 #    define KC_UNDO KC_MAC_UNDO
@@ -56,6 +56,7 @@
 
 enum custom_keycodes {
     KC_QWERTY = SAFE_RANGE,
+    KC_PASSWORD,
     KC_RSTHD,
     KC_OLED,
     OS_SHFT,
@@ -90,13 +91,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //#                                                ╰───────╯       │          │       ╰───────╯                                                 
     //#                                                        ╰───────╯          ╰───────╯                                                         
   [_QWERTY] = LAYOUT(
-    KC_TRANS, KC_Q, KC_W, KC_E,   KC_R,     KC_T,                                               KC_Y,   KC_U,   KC_I,     KC_O,   KC_P,     KC_TRANS, 
+    KC_TRANS, KC_Q, KC_W, KC_E,   KC_R,     KC_T,                                               KC_Y,   KC_U,   KC_I,     KC_O,   KC_P,     KC_PASSWORD, 
     KC_TRANS, KC_A, KC_S, KC_D,   KC_F,     KC_G,                                               KC_H,   KC_J,   KC_K,     KC_L,   KC_SCLN,  KC_TRANS, 
     KC_TRANS, KC_Z, KC_X, KC_C,   KC_V,     KC_B,   KC_TRANS, KC_TRANS,    KC_TRANS, KC_TRANS,  KC_N,   KC_M,   KC_COMMA, KC_DOT, KC_SLASH, KC_RSTHD, 
                           LT_MOS, KC_TRANS, LA_NAV, KC_SPACE, KC_BSPACE,   KC_TRANS, KC_BSPACE, LA_SYM, LA_FNC, LT_MOS                                
   ),
   [_RSTHD] = LAYOUT(
-    KC_TRANS, KC_J,    KC_C, KC_Y,   KC_F,     KC_K,                                              KC_Z,   KC_L,   KC_BSPACE, KC_U,   KC_Q,    KC_TRANS,  
+    KC_TRANS, KC_J,    KC_C, KC_Y,   KC_F,     KC_K,                                              KC_Z,   KC_L,   KC_BSPACE, KC_U,   KC_Q,    KC_PASSWORD,  
     KC_TRANS, KC_R,    KC_S, KC_T,   KC_H,     KC_D,                                              KC_M,   KC_N,   KC_A,      KC_I,   KC_O,    KC_TRANS,  
     KC_TRANS, KC_SCLN, KC_V, KC_G,   KC_P,     KC_B,   KC_TRANS, KC_TRANS,    KC_TRANS, KC_TRANS, KC_X,   KC_W,   KC_COMMA,  KC_DOT, KC_SCLN, KC_QWERTY, 
                              LT_MOS, KC_TRANS, LA_NAV, KC_SPACE, KC_BSPACE,   KC_TRANS, KC_E,     LA_SYM, LA_FNC, LT_MOS                                 
@@ -152,73 +153,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   )
 };
 // clang-format on
-typedef enum {
-    htc_scanning           = 0,
-    htc_primary_pressed    = 1,
-    htc_secondary_pressed  = 2,
-    htc_secondary_released = 4,
-    htc_primary_released   = 8,
-    htc_activated          = 0xF,
-} ehold_tap_combo_state;
-
-typedef enum {
-    htc_action_toggle_smartnum = 1,
-    htc_action_toggle_capsword = 2,
-} ehold_tap_combo_action;
-
-typedef struct {
-    uint16_t               m_keycode_primary;
-    uint16_t               m_keycode_secondary;
-    ehold_tap_combo_state  m_state;
-    ehold_tap_combo_action m_action;
-} hold_tap_combo_t;
-
-//static hold_tap_combo_t htc_combo_smart_number = {.m_keycode_primary = LA_NAV, .m_keycode_secondary = LA_SYM, .m_state = htc_scanning, .m_action = htc_action_toggle_smartnum};
-//static hold_tap_combo_t htc_combo_caps_word    = {.m_keycode_primary = LA_SYM, .m_keycode_secondary = LA_NAV, .m_state = htc_scanning, .m_action = htc_action_toggle_capsword};
-
-int8_t process_htc(hold_tap_combo_t* htc, uint16_t keycode, keyrecord_t* record, int8_t keycode_consumed) {
-    ehold_tap_combo_state state = 0;
-    if (keycode == htc->m_keycode_primary) {
-        if (record->event.pressed) {
-            state = htc_primary_pressed;
-        } else {
-            if (htc->m_state == htc_primary_pressed) {
-                state = htc_primary_released;
-            }
-        }
-    } else if (keycode == htc->m_keycode_secondary) {
-        if (record->event.pressed) {
-            if (htc->m_state == (htc_primary_pressed | htc_primary_released)) {
-                state = htc_secondary_pressed;
-            }
-        } else {
-            if (htc->m_state == (htc_primary_pressed | htc_primary_released | htc_secondary_pressed)) {
-                state = htc_secondary_released;
-            }
-        }
-    }
-
-    if (state == 0 || keycode_consumed > 0) {
-        htc->m_state = 0;
-    } else {
-        htc->m_state |= state;
-        if (htc->m_state == htc_activated) {
-            // execute action
-            if (htc->m_action == htc_action_toggle_smartnum) {
-                smart_feature_toggle(SMART_NUMBERS, _SMART_NUM);
-            } else if (htc->m_action == htc_action_toggle_capsword) {
-                uint8_t layer = _QWERTY_CAPS;
-                if ((default_layer_state & (1 << _RSTHD)) != 0) layer = _RSTHD_CAPS;
-                smart_feature_toggle(SMART_CAPSLOCK, layer);
-            }
-
-            htc->m_state = htc_scanning;
-            return 1;
-        }
-    }
-
-    return 0;
-}
 
 #ifdef ENABLE_ONESHOT
 
@@ -273,6 +207,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     process_record_oled(keycode, record);
 
     switch (keycode) {
+        case KC_PASSWORD:
+            if (record->event.pressed) {
+                SEND_STRING("SP00NS_and_");
+            }
+            break;
         case KC_SMART_NUMBER:
             if (record->event.pressed) {
                 smart_feature_toggle(SMART_NUMBERS, _NUM);
