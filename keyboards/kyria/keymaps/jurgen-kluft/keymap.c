@@ -17,8 +17,6 @@
 #define KC_PC_COPY LCTL(KC_C)
 #define KC_PC_PASTE LCTL(KC_V)
 
-//#define OS_MAC
-
 #ifdef OS_MAC
 #    define KC_UNDO KC_MAC_UNDO
 #    define KC_REDO KC_MAC_REDO
@@ -51,7 +49,6 @@
 
 #define LA_SYM MO(_SYM)
 #define LA_NAV MO(_NAV)
-#define LA_FNC MO(_FNC)
 #define LT_MOS TG(_MOUS)
 
 enum custom_keycodes {
@@ -82,25 +79,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //# │       │   A   ╰───────╯   C   ╰───────╯       │                                        │       ╰───────╯   ,   ╰───────╯   ;   │       │  
     //# │       │       │   X   │       │   V   ╰───────╯                                        ╰───────╯   M   │       │   .   │       │       │  
     //# ╰───────╯───────╯       ╰───────╯       │   B   │ ╭───────╮                    ╭───────╮ │   N   │       ╰───────╯       ╰───────╰───────╯  
-    //# │       │   Z   ╰───────╯       ╰───────╯       │ │       ╰───────╮    ╭───────╯       │ │       ╰───────╯       ╰───────╯   /   │ RSTHD │  
+    //# │       │   Z   ╰───────╯       ╰───────╯       │ │ C_PDT ╰───────╮    ╭───────╯ C_NDT │ │       ╰───────╯       ╰───────╯   /   │ RSTHD │  
     //# │       │       │              ╭───────╮╰───────╯ │       │       │    │       │       │ ╰───────╯╭───────╮              │       │       │  
-    //# ╰───────╯───────╯     ╭───────╮│       ╰───────╮  ╰───────╯       │    │       ╰───────╯  ╭───────╯ A_FNC │╭───────╮     ╰───────╰───────╯  
+    //# ╰───────╯───────╯     ╭───────╮│ SMNUM ╰───────╮  ╰───────╯       │    │       ╰───────╯  ╭───────╯ SMCAP │╭───────╮     ╰───────╰───────╯  
     //#                       │ T_MOS ││       │ A_NAV ╰───────╮  ╰───────╯    ╰───────╯  ╭───────╯ A_SYM │       ││ T_MOS │                        
     //#                       │       │╰───────╯       │ SPACE ╰───────╮          ╭───────╯   ⌫   │       ╰───────╯│       │                        
-    //#                       ╰encodr─╯        ╰───────╯       │   ⌫   │          │       │       ╰───────╯        ╰encodr─╯                        
+    //#                       ╰encodr─╯        ╰───────╯       │       │          │       │       ╰───────╯        ╰encodr─╯                        
     //#                                                ╰───────╯       │          │       ╰───────╯                                                 
     //#                                                        ╰───────╯          ╰───────╯                                                         
   [_QWERTY] = LAYOUT(
-    KC_TRANS, KC_Q, KC_W, KC_E,   KC_R,     KC_T,                                               KC_Y,   KC_U,   KC_I,     KC_O,   KC_P,     KC_PASSWORD, 
-    KC_TRANS, KC_A, KC_S, KC_D,   KC_F,     KC_G,                                               KC_H,   KC_J,   KC_K,     KC_L,   KC_SCLN,  KC_TRANS, 
-    KC_TRANS, KC_Z, KC_X, KC_C,   KC_V,     KC_B,   KC_TRANS, KC_TRANS,    KC_TRANS, KC_TRANS,  KC_N,   KC_M,   KC_COMMA, KC_DOT, KC_SLASH, KC_RSTHD, 
-                          LT_MOS, KC_TRANS, LA_NAV, KC_SPACE, KC_BSPACE,   KC_TRANS, KC_BSPACE, LA_SYM, LA_FNC, LT_MOS                                
+    KC_TRANS, KC_Q, KC_W, KC_E,   KC_R,            KC_T,                                              KC_Y,   KC_U,              KC_I,     KC_O,   KC_P,     KC_TRANS, 
+    KC_TRANS, KC_A, KC_S, KC_D,   KC_F,            KC_G,                                              KC_H,   KC_J,              KC_K,     KC_L,   KC_SCLN,  KC_TRANS, 
+    KC_TRANS, KC_Z, KC_X, KC_C,   KC_V,            KC_B,   KC_PDT,   KC_TRANS,   KC_TRANS, KC_NDT,    KC_N,   KC_M,              KC_COMMA, KC_DOT, KC_SLASH, KC_RSTHD, 
+                          LT_MOS, KC_SMART_NUMBER, LA_NAV, KC_SPACE, KC_TRANS,   KC_TRANS, KC_BSPACE, LA_SYM, KC_SMART_CAPSLOCK, LT_MOS                                
   ),
   [_RSTHD] = LAYOUT(
-    KC_TRANS, KC_J,    KC_C, KC_Y,   KC_F,     KC_K,                                              KC_Z,   KC_L,   KC_BSPACE, KC_U,   KC_Q,    KC_PASSWORD,  
-    KC_TRANS, KC_R,    KC_S, KC_T,   KC_H,     KC_D,                                              KC_M,   KC_N,   KC_A,      KC_I,   KC_O,    KC_TRANS,  
-    KC_TRANS, KC_SCLN, KC_V, KC_G,   KC_P,     KC_B,   KC_TRANS, KC_TRANS,    KC_TRANS, KC_TRANS, KC_X,   KC_W,   KC_COMMA,  KC_DOT, KC_SCLN, KC_QWERTY, 
-                             LT_MOS, KC_TRANS, LA_NAV, KC_SPACE, KC_BSPACE,   KC_TRANS, KC_E,     LA_SYM, LA_FNC, LT_MOS                                 
+    KC_TRANS, KC_J,    KC_C, KC_Y,   KC_F,            KC_K,                                             KC_Z,   KC_L,              KC_BSPACE, KC_U,   KC_Q,    KC_TRANS,  
+    KC_TRANS, KC_R,    KC_S, KC_T,   KC_H,            KC_D,                                             KC_M,   KC_N,              KC_A,      KC_I,   KC_O,    KC_TRANS,  
+    KC_TRANS, KC_SCLN, KC_V, KC_G,   KC_P,            KC_B,   KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_X,   KC_W,              KC_COMMA,  KC_DOT, KC_SCLN, KC_QWERTY, 
+                             LT_MOS, KC_SMART_NUMBER, LA_NAV, KC_SPACE, KC_TRANS,   KC_TRANS, KC_E,     LA_SYM, KC_SMART_CAPSLOCK, LT_MOS                                 
   ),
   [_QWERTY_CAPS] = LAYOUT(
     KC_TRANS, LSFT(KC_Q), LSFT(KC_W), LSFT(KC_E), LSFT(KC_R), LSFT(KC_T),                                           LSFT(KC_Y), LSFT(KC_U), LSFT(KC_I), LSFT(KC_O), LSFT(KC_P), KC_TRANS, 
@@ -114,7 +111,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_TRANS, KC_UNDS,    LSFT(KC_V), LSFT(KC_G), LSFT(KC_P), LSFT(KC_B), KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS,   LSFT(KC_X), LSFT(KC_W), KC_COMMA,   KC_DOT,     KC_AT,      KC_TRANS, 
                                       KC_TRANS,   KC_TRANS,   KC_TRANS,   KC_TRANS, KC_TRANS,   KC_TRANS, LSFT(KC_E), KC_TRANS,   KC_TRANS,   KC_TRANS                                      
   ),
-  [_SMART_NUM] = LAYOUT(
+  [_NUM] = LAYOUT(
     KC_TRANS, KC_TRANS, KC_TRANS, KC_LBRACKET, KC_RBRACKET, KC_SLASH,                                           KC_MINUS, KC_LPRN,  KC_RPRN,  KC_TRANS, KC_TRANS, KC_TRANS, 
     KC_TRANS, KC_5,     KC_6,     KC_7,        KC_8,        KC_ASTR,                                            KC_PLUS,  KC_1,     KC_2,     KC_3,     KC_4,     KC_TRANS, 
     KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS,    KC_9,        KC_EQUAL, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_EQUAL, KC_0,     KC_COMMA, KC_DOT,   KC_TRANS, KC_TRANS, 
@@ -122,24 +119,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
   // Symbols in order of frequency # | & { } , ? [ ] _ < > $ % ` ' / - 0 : \ 1 ( ) = ^ ~ " 6 7 8 ! . 9 + @ * 2 3 4 5 
   [_SYM] = LAYOUT(
-    UC_SHRG, KC_TRANS, KC_SLASH,  KC_LBRC,  KC_RBRC,  KC_CIRC,                                                   KC_DQUO,  KC_LABK,  KC_RABK,  KC_UNDS,  KC_TILDE, KC_TRANS, 
-    UC_DISA, KC_HASH,  KC_EQUAL,  KC_LCBR,  KC_RCBR,  KC_ASTR,                                                   KC_PLUS,  KC_LPRN,  KC_RPRN,  KC_MINUS, KC_COLN,  KC_TRANS, 
-    UC_LVIT, KC_DLR,   KC_BSLASH, KC_PIPE,  KC_AMPR,  KC_GRV,          KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_QUOT,  KC_PERC,  KC_EXLM,  KC_QUES,  KC_AT,    KC_TRANS, 
-                                  KC_TRANS, KC_TRANS, KC_SMART_NUMBER, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS                                
-  ),
-  [_NUM] = LAYOUT(
-    KC_TRANS, KC_TRANS, KC_TRANS, KC_LBRACKET, KC_RBRACKET, KC_SLASH,                                           KC_MINUS, KC_LPRN,  KC_RPRN,  KC_TRANS, KC_TRANS, KC_TRANS, 
-    KC_TRANS, KC_5,     KC_6,     KC_7,        KC_8,        KC_ASTR,                                            KC_PLUS,  KC_1,     KC_2,     KC_3,     KC_4,     KC_TRANS, 
-    KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS,    KC_9,        KC_EQUAL, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_EQUAL, KC_0,     KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, 
-                                  KC_TRANS,    KC_TRANS,    KC_TRANS, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS                                
+    UC_SHRG, KC_TRANS, KC_SLASH,  KC_LBRC,  KC_RBRC,  KC_CIRC,                                            KC_DQUO,  KC_LABK,  KC_RABK,  KC_UNDS,  KC_TILDE, KC_TRANS, 
+    UC_DISA, KC_HASH,  KC_EQUAL,  KC_LCBR,  KC_RCBR,  KC_ASTR,                                            KC_PLUS,  KC_LPRN,  KC_RPRN,  KC_MINUS, KC_COLN,  KC_TRANS, 
+    UC_LVIT, KC_DLR,   KC_BSLASH, KC_PIPE,  KC_AMPR,  KC_GRV,   KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_QUOT,  KC_PERC,  KC_EXLM,  KC_QUES,  KC_AT,    KC_TRANS, 
+                                  KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS                                
   ),
   [_NAV] = LAYOUT(
-    KC_TRANS, KC_TRANS, KC_CLOSE, KC_ESCAPE, KC_ENTER, KC_TAB,                                            KC_INSERT,         KC_PGUP,   KC_HOME,  KC_TRANS, KC_TRANS, KC_TRANS, 
-    KC_TRANS, OS_CMD,   OS_ALT,   OS_CTRL,   OS_SHFT,  KC_DELETE,                                         KC_LEFT,           KC_DOWN,   KC_UP,    KC_RIGHT, KC_TRANS, KC_TRANS, 
-    KC_TRANS, KC_UNDO,  KC_CUT,   KC_COPY,   KC_PASTE, KC_BSPACE, KC_TRANS, KC_TRANS,   KC_PDT, KC_TRANS, KC_TRANS,          KC_PGDOWN, KC_END,   KC_TRANS, KC_TRANS, KC_TRANS, 
-                                  KC_TRANS,  KC_TRANS, KC_TRANS,  KC_TRANS, KC_TRANS,   KC_NDT, KC_TRANS, KC_SMART_CAPSLOCK, KC_TRANS,  KC_TRANS                                
+    KC_TRANS, KC_TRANS, KC_CLOSE, KC_ESCAPE, KC_ENTER, KC_TAB,                                              KC_INSERT, KC_PGUP,   KC_HOME,  KC_TRANS, KC_TRANS, KC_TRANS, 
+    KC_TRANS, OS_CMD,   OS_ALT,   OS_CTRL,   OS_SHFT,  KC_DELETE,                                           KC_LEFT,   KC_DOWN,   KC_UP,    KC_RIGHT, KC_TRANS, KC_TRANS, 
+    KC_TRANS, KC_UNDO,  KC_CUT,   KC_COPY,   KC_PASTE, KC_BSPACE, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS,  KC_PGDOWN, KC_END,   KC_TRANS, KC_TRANS, KC_TRANS, 
+                                  KC_TRANS,  KC_TRANS, KC_TRANS,  KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS,  KC_TRANS,  KC_TRANS                                
   ),
-  [_FNC] = LAYOUT(
+  [_RAISE] = LAYOUT(
     KC_TRANS, KC_F12, KC_F11, KC_F10,   KC_F9,    KC_TRANS,                                           KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, 
     KC_TRANS, KC_F8,  KC_F7,  KC_F6,    KC_F5,    KC_TRANS,                                           KC_TRANS, OS_SHFT,  OS_CTRL,  OS_ALT,   OS_CMD,   KC_TRANS, 
     KC_TRANS, KC_F4,  KC_F3,  KC_F2,    KC_F1,    KC_TRANS, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, 
@@ -154,11 +145,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 // clang-format on
 
+layer_state_t layer_state_set_user(layer_state_t state) {
+    return update_tri_layer_state(state, _NAV, _SYM, _RAISE);
+}
+
 #ifdef ENABLE_ONESHOT
 
 bool is_oneshot_modifier_cancel_key(uint16_t keycode) {
     switch (keycode) {
-        case LA_FNC:
         case LA_NAV:
             return true;
         default:
@@ -170,8 +164,6 @@ bool is_oneshot_modifier_ignored_key(uint16_t keycode) {
     switch (keycode) {
         case LA_SYM:
         case LA_NAV:
-        case LA_FNC:
-        case KC_LSFT:
         case KC_SMART_NUMBER:
             return true;
     }
@@ -219,8 +211,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             break;
         case KC_SMART_CAPSLOCK:
             if (record->event.pressed) {
-                uint8_t layer = _QWERTY_CAPS;
-                if ((default_layer_state & (1 << _RSTHD)) != 0) layer = _RSTHD_CAPS;
+                // Layer Bit -> Layer Number
+                // _QWERTY   ->  _QWERTY_CAPS
+                //     1     ->      2
+                // _RSTHD    ->  _RSTHD_CAPS
+                //     2     ->      3
+                uint8_t layer = default_layer_state + 1;    // Warning: QWERTY and RSTHD and their CAPSLOCK layers have a dependency
                 smart_feature_toggle(SMART_CAPSLOCK, layer);
             }
             break;
@@ -230,11 +226,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 rgblight_enable();
             }
     }
-
-    // Some features below need to know if the keycode was consumed. For example: If NAV was used
-    // to cancel a MOD then HTC should return to its initial state.
-    // Also if NAV was used as a cancel key for a smart feature then it should not cancel anything
-    // in 'update_oneshot_modifiers'.
 
     int8_t keycode_consumed = 0;
 
@@ -252,9 +243,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
 #ifdef ENABLE_ONESHOT
     keycode_consumed += update_oneshot_modifiers(keycode, record, keycode_consumed);
 #endif
-
-    //keycode_consumed += process_htc(&htc_combo_smart_number, keycode, record, keycode_consumed);
-    //keycode_consumed += process_htc(&htc_combo_caps_word, keycode, record, keycode_consumed);
 
     switch (keycode) {
         case KC_QWERTY:
@@ -300,13 +288,6 @@ void encoder_update_user(uint8_t index, bool clockwise) {
                     tap_code16(KC_NDT);
                 } else {
                     tap_code16(KC_PDT);
-                }
-                break;
-            case _FNC:  // Mousewheel Up/Down
-                if (clockwise) {
-                    tap_code(KC_MS_WH_UP);
-                } else {
-                    tap_code(KC_MS_WH_DOWN);
                 }
                 break;
             case _MOUS:  // Underglow color

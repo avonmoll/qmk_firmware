@@ -115,13 +115,17 @@ void render_skeeb_logo(void) {
 void render_mod_status(uint8_t modifiers) {
 	oled_write_P(PSTR(" "), false);	
 	oled_write_P(PSTR("-"), false);
-    oled_write_P(PSTR("SHF"), (modifiers & MOD_MASK_SHIFT));
+#ifdef OS_MAC
+	oled_write_P(PSTR("GUI"), (modifiers & MOD_MASK_GUI));
+#else
+	oled_write_P(PSTR("WIN"), (modifiers & MOD_MASK_GUI));
+#endif
+	oled_write_P(PSTR("-"), false);
+    oled_write_P(PSTR("ALT"), (modifiers & MOD_MASK_ALT));
 	oled_write_P(PSTR("-"), false);
     oled_write_P(PSTR("CTR"), (modifiers & MOD_MASK_CTRL));
 	oled_write_P(PSTR("-"), false);
-	oled_write_P(PSTR("WIN"), (modifiers & MOD_MASK_GUI));
-	oled_write_P(PSTR("-"), false);
-    oled_write_P(PSTR("ALT"), (modifiers & MOD_MASK_ALT));
+    oled_write_P(PSTR("SHF"), (modifiers & MOD_MASK_SHIFT));
     oled_write_P(PSTR("-"), false);
 	oled_write_P(PSTR(" "), false);	
 }
@@ -136,6 +140,8 @@ void render_layer_state(void){
 	}
 }
 
+PROGMEM char const layer_names[] = "-QWERT\0\0-RSTHD\0\0-CAPS \0\0-CAPS \0\0-NUMB \0\0-SYMB \0\0-NAVI \0\0-RAIS \0\0-MOUS ";
+
 // Keylock State			
 void render_keylock_status(uint8_t led_usb_state) {
 	//oled_write_P(led_usb_state & (1<<USB_LED_NUM_LOCK) ? PSTR("-NUML") : PSTR("-----"), false);
@@ -146,53 +152,56 @@ void render_keylock_status(uint8_t led_usb_state) {
 	//oled_write_P(PSTR(" "), false);	
 
     oled_write_P(PSTR(" "), false);
+
     // Host Keyboard Layer Status
-    uint16_t layers = (layer_state | default_layer_state);
+    uint16_t layers = layer_state;
+
+    // Remove NAVI and SYMB layers when RAIS is active
+    if ((layers & (1<<_RAISE)) != 0) {
+        layers &= ~((1<<_SYM) | (1<<_NAV));
+    }
+
     uint16_t count = 0;
-    for (int i = 0; i < 16; i++)
+    for (int8_t i = 0; i < 16; i++)
     {
         if ((layers & 1) != 0)
         {
-            const uint16_t layer = i;
-            if (layer == _RSTHD_CAPS || layer == _QWERTY_CAPS)
-            {
-                oled_write_P(PSTR("-CAPS "), false);
-                count += 1;
-            }
-            else if (layer == _SYM)
-            {
-                oled_write_P(PSTR("-SYMB "), false);
-                count += 1;
-            }
-            else if (layer == _NUM || layer == _SMART_NUM)
-            {
-                oled_write_P(PSTR("-NUMB "), false);
-                count += 1;
-            }
-            else if (layer == _NAV)
-            {
-                oled_write_P(PSTR("-NAVI "), false);
-                count += 1;
-            }
-            else if (layer == _FNC)
-            {
-                oled_write_P(PSTR("-FUNC "), false);
-                count += 1;
-            }
-            else if (layer == _MOUS)
-            {
-                oled_write_P(PSTR("-MOUS "), false);
-                count += 1;
-            }
+            oled_write_P(&layer_names[i<<3], false);
+            count += 1;
         }
         layers = layers >> 1;
         if (count == 3)
             break;
     }
 
-    for ( ; count < 3; count++)
-    {
-	    oled_write_P(PSTR("----- "), false);	
+    if (count < 3) {
+#ifdef WPM_ENABLE
+        uint8_t n = get_current_wpm();
+        char wpm_counter[6];
+        wpm_counter[5] = '\0';
+        wpm_counter[4] = ' ';
+        wpm_counter[3] = ' ';
+        wpm_counter[2] = '0' + n % 10;
+        wpm_counter[1] = ( n /= 10) % 10 ? '0' + (n) % 10 : (n / 10) % 10 ? '0' : ' ';
+        wpm_counter[0] = n / 10 ? '0' + n / 10 : ' ';
+        if (wpm_counter[0]==' ') {
+            if (wpm_counter[1]==' ') {
+                oled_write(&wpm_counter[2], false);            
+            } else {
+                wpm_counter[4] = '\0';
+                oled_write(&wpm_counter[1], false);
+            }
+        } else {
+            wpm_counter[3] = '\0';
+            oled_write(&wpm_counter[0], false);
+        }
+        oled_write_P(PSTR("-- "), false);	
+        count += 1;
+#endif
+        for ( ; count < 3; count++)
+        {
+            oled_write_P(PSTR("----- "), false);	
+        }
     }
 }
 
