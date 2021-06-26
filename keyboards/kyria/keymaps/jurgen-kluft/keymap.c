@@ -89,7 +89,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_QWERTY] = LAYOUT(
     KC_TRANS, KC_Q, KC_W, KC_E,   KC_R,            KC_T,                                              KC_Y,   KC_U,              KC_I,     KC_O,   KC_P,     KC_TRANS, 
     KC_TRANS, KC_A, KC_S, KC_D,   KC_F,            KC_G,                                              KC_H,   KC_J,              KC_K,     KC_L,   KC_SCLN,  KC_TRANS, 
-    KC_TRANS, KC_Z, KC_X, KC_C,   KC_V,            KC_B,   KC_PDT,   KC_TRANS,   KC_TRANS, KC_NDT,    KC_N,   KC_M,              KC_COMMA, KC_DOT, KC_SLASH, KC_RSTHD, 
+    KC_TRANS, KC_Z, KC_X, KC_C,   KC_V,            KC_B,   OS_SHFT,  KC_PDT,     KC_NDT,   OS_SHFT,   KC_N,   KC_M,              KC_COMMA, KC_DOT, KC_SLASH, KC_RSTHD, 
                           LT_MOS, KC_SMART_NUMBER, LA_NAV, KC_SPACE, KC_TRANS,   KC_TRANS, KC_BSPACE, LA_SYM, KC_SMART_CAPSLOCK, LT_MOS                                
   ),
   [_RSTHD] = LAYOUT(
