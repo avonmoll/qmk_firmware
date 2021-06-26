@@ -53,6 +53,7 @@
 
 enum custom_keycodes {
     KC_QWERTY = SAFE_RANGE,
+    KC_PASSWORD,
     KC_RSTHD,
     KC_OLED,
     OS_SHFT,
@@ -198,6 +199,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     process_record_oled(keycode, record);
 
     switch (keycode) {
+        case KC_PASSWORD:
+            if (record->event.pressed) {
+                SEND_STRING("SP00NS_and_");
+            }
+            break;
         case KC_SMART_NUMBER:
             if (record->event.pressed) {
                 smart_feature_toggle(SMART_NUMBERS, _NUM);
