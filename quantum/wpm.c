@@ -34,14 +34,32 @@ __attribute__((weak)) bool wpm_keycode_user(uint16_t keycode) {
     return false;
 }
 
-// Full range is 100 * 100 ms = 10 s
-// The computed WPM needs to be multiplied by 6 to get the actual WPM
-#define WPM_WINDOW_NUM      100
-#define WPM_WINDOW_WPMMAX   5  
-#define WPM_WINDOW_MS       100
+// The shorter you make the capture duration the quicker the fall off once you stop typing.
+// Comment this out to get a longer fall-off but also a longer ramp up time to display
+// the actual WPM
+#define WPM_SHORT_WINDOW
 
-#define WPM_PROCESS_DECAY 0
-#define WPM_PROCESS_KEYPRESS 1
+#ifndef WPM_SHORT_WINDOW
+//    Full range we capture here is 100 * 100 ms = 10 s, this also means that it will take
+//      ~10 seconds to display the actual WPM once you start typing.
+//    The computed WPM needs to be multiplied by 6 (6*10s=60s=1min) 
+//      to get the actual WPM, see 'WPM_WINDOW_TO_WPM' (x*6 = x*4 + x*2)
+#    define WPM_WINDOW_NUM      100
+#    define WPM_WINDOW_MS       100
+#    define WPM_WINDOW_TO_WPM(x)  (((x) << 2) + ((x) << 1))
+
+#else
+//    Full range we capture here is 100 * 60 ms = 6 s, this also means that it will take
+//      ~6 seconds to display the actual WPM once you start typing.
+//    x*10 = x*8 + x*2
+#    define WPM_WINDOW_NUM      100
+#    define WPM_WINDOW_MS       60
+#    define WPM_WINDOW_TO_WPM(x)  (((x) << 3) + ((x) << 1))
+#endif
+
+// State names
+#    define WPM_PROCESS_DECAY 0
+#    define WPM_PROCESS_KEYPRESS 1
 
 typedef struct {
     uint8_t windows[WPM_WINDOW_NUM];
@@ -85,7 +103,7 @@ void process_wpm(uint8_t mode) {
         if (mode == WPM_PROCESS_DECAY) {
             // Have the wpm display value move towards the actual (lower) wpm value in a timely manner
             if ((s_wpm_state.period & 0x7) == 0) {  // Delaying by 8 * WPM_WINDOW_MS = 800 ms
-                uint8_t wpm = (s_wpm_state.wpm << 2) + (s_wpm_state.wpm << 1);  // * 6
+                uint8_t wpm = WPM_WINDOW_TO_WPM(s_wpm_state.wpm);
                 if (wpm < s_wpm_state.wpm_displayed) {
                     s_wpm_state.wpm_displayed = s_wpm_state.wpm_displayed - (((s_wpm_state.wpm_displayed - wpm) >> 2) | 1);
                 }
