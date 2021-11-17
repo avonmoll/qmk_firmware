@@ -259,7 +259,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         case KC_OLED:
             if (record->event.pressed) {
                 toggle_display_oled();
+#ifdef RGBLIGHT_ENABLE
                 rgblight_enable();
+#endif
             }
     }
 
@@ -327,11 +329,13 @@ void encoder_update_user(uint8_t index, bool clockwise) {
                 }
                 break;
             case _MOUS:  // Underglow color
+#ifdef RGBLIGHT_ENABLE
                 if (clockwise) {
                     rgblight_increase_hue();
                 } else {
                     rgblight_decrease_hue();
                 }
+#endif
                 break;
             default:  // Volume Up/Down
                 if (clockwise) {
@@ -351,11 +355,13 @@ void encoder_update_user(uint8_t index, bool clockwise) {
                 }
                 break;
             case _MOUS:  // Underglow brightness
+#ifdef RGBLIGHT_ENABLE
                 if (clockwise) {
                     rgblight_increase_val();
                 } else {
                     rgblight_decrease_val();
                 }
+#endif
                 break;
             default:
                 break;
