@@ -71,7 +71,6 @@ void smart_numbers_process(uint16_t keycode, keyrecord_t *record) {
         case KC_LPRN:
         case KC_RPRN:
         case KC_BSPC:
-        case KC_DEL:
         case KC_UNDS:
         case KC_MINS:
         case KC_PLUS:

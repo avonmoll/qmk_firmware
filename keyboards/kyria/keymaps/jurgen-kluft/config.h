@@ -16,7 +16,7 @@
 
 #pragma once
 
-#define OS_MAC
+//#define OS_MAC
 
 #ifdef OLED_DRIVER_ENABLE
   #define OLED_DISPLAY_128X64

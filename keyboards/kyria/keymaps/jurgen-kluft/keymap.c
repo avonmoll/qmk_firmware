@@ -88,16 +88,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     //#                                                ╰───────╯       │          │       ╰───────╯                                                 
     //#                                                        ╰───────╯          ╰───────╯                                                         
   [_QWERTY] = LAYOUT(
-    KC_TRANS, KC_Q, KC_W, KC_E,   KC_R,            KC_T,                                              KC_Y,   KC_U,              KC_I,     KC_O,   KC_P,     KC_TRANS, 
-    KC_TRANS, KC_A, KC_S, KC_D,   KC_F,            KC_G,                                              KC_H,   KC_J,              KC_K,     KC_L,   KC_SCLN,  KC_TRANS, 
-    KC_TRANS, KC_Z, KC_X, KC_C,   KC_V,            KC_B,   KC_PDT,   KC_TRANS,   KC_TRANS, KC_NDT,    KC_N,   KC_M,              KC_COMMA, KC_DOT, KC_SLASH, KC_RSTHD, 
-                          LT_MOS, KC_SMART_NUMBER, LA_NAV, KC_SPACE, KC_TRANS,   KC_TRANS, KC_BSPACE, LA_SYM, KC_SMART_CAPSLOCK, LT_MOS                                
+    KC_TRANS,          KC_Q, KC_W, KC_E,   KC_R,     KC_T,                                              KC_Y,   KC_U,     KC_I,     KC_O,   KC_P,     KC_PASSWORD, 
+    KC_SMART_CAPSLOCK, KC_A, KC_S, KC_D,   KC_F,     KC_G,                                              KC_H,   KC_J,     KC_K,     KC_L,   KC_SCLN,  KC_SMART_NUMBER, 
+    KC_TRANS,          KC_Z, KC_X, KC_C,   KC_V,     KC_B,   KC_PDT,   KC_TRANS,   KC_TRANS, KC_NDT,    KC_N,   KC_M,     KC_COMMA, KC_DOT, KC_SLASH, KC_RSTHD, 
+                                   LT_MOS, KC_TRANS, LA_NAV, KC_SPACE, KC_TRANS,   KC_TRANS, KC_BSPACE, LA_SYM, KC_TRANS, LT_MOS                                
   ),
   [_RSTHD] = LAYOUT(
-    KC_TRANS, KC_J,    KC_C, KC_Y,   KC_F,            KC_K,                                             KC_Z,   KC_L,              KC_BSPACE, KC_U,   KC_Q,    KC_TRANS,  
-    KC_TRANS, KC_R,    KC_S, KC_T,   KC_H,            KC_D,                                             KC_M,   KC_N,              KC_A,      KC_I,   KC_O,    KC_TRANS,  
-    KC_TRANS, KC_SCLN, KC_V, KC_G,   KC_P,            KC_B,   KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_X,   KC_W,              KC_COMMA,  KC_DOT, KC_SCLN, KC_QWERTY, 
-                             LT_MOS, KC_SMART_NUMBER, LA_NAV, KC_SPACE, KC_TRANS,   KC_TRANS, KC_E,     LA_SYM, KC_SMART_CAPSLOCK, LT_MOS                                 
+    KC_TRANS,          KC_J,    KC_C, KC_Y,   KC_F,     KC_K,                                             KC_Z,   KC_L,     KC_BSPACE, KC_U,   KC_Q,    KC_PASSWORD,  
+    KC_SMART_CAPSLOCK, KC_R,    KC_S, KC_T,   KC_H,     KC_D,                                             KC_M,   KC_N,     KC_A,      KC_I,   KC_O,    KC_SMART_NUMBER,  
+    KC_TRANS,          KC_SCLN, KC_V, KC_G,   KC_P,     KC_B,   KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_X,   KC_W,     KC_COMMA,  KC_DOT, KC_SCLN, KC_QWERTY, 
+                                      LT_MOS, KC_TRANS, LA_NAV, KC_SPACE, KC_TRANS,   KC_TRANS, KC_E,     LA_SYM, KC_TRANS, LT_MOS                                 
   ),
   [_QWERTY_CAPS] = LAYOUT(
     KC_TRANS, LSFT(KC_Q), LSFT(KC_W), LSFT(KC_E), LSFT(KC_R), LSFT(KC_T),                                           LSFT(KC_Y), LSFT(KC_U), LSFT(KC_I), LSFT(KC_O), LSFT(KC_P), KC_TRANS, 
@@ -112,10 +112,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                       KC_TRANS,   KC_TRANS,   KC_TRANS,   KC_TRANS, KC_TRANS,   KC_TRANS, LSFT(KC_E), KC_TRANS,   KC_TRANS,   KC_TRANS                                      
   ),
   [_NUM] = LAYOUT(
-    KC_TRANS, KC_TRANS, KC_TRANS, KC_LBRACKET, KC_RBRACKET, KC_SLASH,                                           KC_MINUS, KC_LPRN,  KC_RPRN,  KC_TRANS, KC_TRANS, KC_TRANS, 
-    KC_TRANS, KC_5,     KC_6,     KC_7,        KC_8,        KC_ASTR,                                            KC_PLUS,  KC_1,     KC_2,     KC_3,     KC_4,     KC_TRANS, 
-    KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS,    KC_9,        KC_EQUAL, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_EQUAL, KC_0,     KC_COMMA, KC_DOT,   KC_TRANS, KC_TRANS, 
-                                  KC_TRANS,    KC_TRANS,    KC_TRANS, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS                                
+    KC_TRANS, KC_TRANS, KC_TRANS, KC_SLASH,    KC_EQUAL, KC_TRANS,                                           KC_LBRACKET, KC_7,     KC_8,     KC_9, KC_TRANS, KC_TRANS, 
+    KC_TRANS, KC_SCLN,  KC_UNDS,  KC_PLUS,     KC_MINUS, KC_ASTR,                                            KC_0,        KC_4,     KC_5,     KC_6, KC_TRANS, KC_TRANS, 
+    KC_TRANS, KC_TRANS, KC_TRANS, KC_COMMA,    KC_DOT,   KC_TRANS, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_RBRACKET, KC_1,     KC_2,     KC_3, KC_TRANS, KC_TRANS, 
+                                  KC_TRANS,    KC_TRANS, KC_TRANS, KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_TRANS,    KC_TRANS, KC_TRANS                                
   ),
   // Symbols in order of frequency # | & { } , ? [ ] _ < > $ % ` ' / - 0 : \ 1 ( ) = ^ ~ " 6 7 8 ! . 9 + @ * 2 3 4 5 
   [_SYM] = LAYOUT(
@@ -145,9 +145,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 // clang-format on
 
-layer_state_t layer_state_set_user(layer_state_t state) {
-    return update_tri_layer_state(state, _NAV, _SYM, _RAISE);
-}
+layer_state_t layer_state_set_user(layer_state_t state) { return update_tri_layer_state(state, _NAV, _SYM, _RAISE); }
 
 #ifdef ENABLE_ONESHOT
 
@@ -195,8 +193,47 @@ bool smart_feature_cancel_key(uint16_t keycode, keyrecord_t* recor) {
     return false;
 }
 
+int8_t la_nav_taps = 0;
+int8_t la_sym_taps = 0;
+
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     process_record_oled(keycode, record);
+
+    switch (keycode) {
+        case LA_NAV:
+            if (record->event.pressed) {
+                la_nav_taps += 1;
+            } else {
+                la_nav_taps += 1;                
+            }
+            break;
+        case LA_SYM:
+            if (record->event.pressed) {
+                la_sym_taps += 1;
+            } else {
+                la_sym_taps += 1;
+            }
+            break;
+        default:
+            // Reset double tap detection
+            la_nav_taps = 0;
+            la_sym_taps = 0;
+            break;
+    }
+
+    uint8_t const layer = default_layer_state + 1;  // Warning: QWERTY and RSTHD and their CAPSLOCK layers have a dependency
+    
+    // Still have a free trigger to use for something
+    // if (la_nav_taps == 2 && la_sym_taps == 2) {
+    //     // some other layer can be activated
+    // }
+
+    if (la_nav_taps >= 4 && ((la_nav_taps & 1) == 0)) {
+        smart_feature_toggle(SMART_CAPSLOCK, layer);
+    }
+    if (la_sym_taps >= 4 && ((la_sym_taps & 1) == 0)) {
+        smart_feature_toggle(SMART_NUMBERS, _NUM);
+    }
 
     switch (keycode) {
         case KC_PASSWORD:
@@ -216,7 +253,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 //     1     ->      2
                 // _RSTHD    ->  _RSTHD_CAPS
                 //     2     ->      3
-                uint8_t layer = default_layer_state + 1;    // Warning: QWERTY and RSTHD and their CAPSLOCK layers have a dependency
                 smart_feature_toggle(SMART_CAPSLOCK, layer);
             }
             break;
@@ -321,12 +357,7 @@ void encoder_update_user(uint8_t index, bool clockwise) {
                     rgblight_decrease_val();
                 }
                 break;
-            default:  // Brightness Up/Down
-                if (clockwise) {
-                    tap_code(KC_BRIU);
-                } else {
-                    tap_code(KC_BRID);
-                }
+            default:
                 break;
         }
     } else {
