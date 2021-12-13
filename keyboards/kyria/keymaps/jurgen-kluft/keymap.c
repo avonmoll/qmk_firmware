@@ -236,6 +236,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             break;
     }
 
+    if (la_nav_pressed == 1 && la_sym_pressed == 1) {
+        la_nav_pressed_released = 0;
+        la_sym_pressed_released = 0;
+        la_nav_pressed = 0;
+        la_sym_pressed = 0;
+    }
 
     if (la_nav_pressed_released == 1) {
         smart_feature_toggle(SMART_CAPSLOCK, layer);
