@@ -7,6 +7,11 @@
 static uint8_t g_smart_status[2] = { 0, 0 };
 
 bool smart_feature_state(uint8_t f) { return (g_smart_status[f] != 0); }
+void smart_feature_enable(uint8_t f, uint8_t layer) {
+    smart_feature_disable(1-f); // hack: turning on one smart feature turns off the other
+    g_smart_status[f] = layer;
+    layer_on(layer);
+}
 void smart_feature_disable(uint8_t f) {
   uint8_t layer = g_smart_status[f];
   if (layer > 0)

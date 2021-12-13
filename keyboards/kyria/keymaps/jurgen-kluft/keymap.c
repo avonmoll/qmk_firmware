@@ -49,6 +49,9 @@
 
 #define LA_SYM MO(_SYM)
 #define LA_NAV MO(_NAV)
+#define LA_NUM MO(_NUM)
+#define LA_QCAPS MO(_QWERTY_CAPS)
+#define LA_RCAPS MO(_RSTHD_CAPS)
 #define LT_MOS TG(_MOUS)
 
 enum custom_keycodes {
@@ -91,13 +94,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_TRANS,          KC_Q, KC_W, KC_E,   KC_R,     KC_T,                                              KC_Y,   KC_U,     KC_I,     KC_O,   KC_P,     KC_PASSWORD, 
     KC_SMART_CAPSLOCK, KC_A, KC_S, KC_D,   KC_F,     KC_G,                                              KC_H,   KC_J,     KC_K,     KC_L,   KC_SCLN,  KC_SMART_NUMBER, 
     KC_TRANS,          KC_Z, KC_X, KC_C,   KC_V,     KC_B,   KC_PDT,   KC_TRANS,   KC_TRANS, KC_NDT,    KC_N,   KC_M,     KC_COMMA, KC_DOT, KC_SLASH, KC_RSTHD, 
-                                   LT_MOS, KC_TRANS, LA_NAV, KC_SPACE, KC_TRANS,   KC_TRANS, KC_BSPACE, LA_SYM, KC_TRANS, LT_MOS                                
+                                   LT_MOS, LA_NUM,   LA_NAV, KC_SPACE, KC_TRANS,   KC_TRANS, KC_BSPACE, LA_SYM, LA_QCAPS, LT_MOS                                
   ),
   [_RSTHD] = LAYOUT(
     KC_TRANS,          KC_J,    KC_C, KC_Y,   KC_F,     KC_K,                                             KC_Z,   KC_L,     KC_BSPACE, KC_U,   KC_Q,    KC_PASSWORD,  
     KC_SMART_CAPSLOCK, KC_R,    KC_S, KC_T,   KC_H,     KC_D,                                             KC_M,   KC_N,     KC_A,      KC_I,   KC_O,    KC_SMART_NUMBER,  
     KC_TRANS,          KC_SCLN, KC_V, KC_G,   KC_P,     KC_B,   KC_TRANS, KC_TRANS,   KC_TRANS, KC_TRANS, KC_X,   KC_W,     KC_COMMA,  KC_DOT, KC_SCLN, KC_QWERTY, 
-                                      LT_MOS, KC_TRANS, LA_NAV, KC_SPACE, KC_TRANS,   KC_TRANS, KC_E,     LA_SYM, KC_TRANS, LT_MOS                                 
+                                      LT_MOS, LA_NUM,   LA_NAV, KC_SPACE, KC_TRANS,   KC_TRANS, KC_E,     LA_SYM, LA_RCAPS, LT_MOS                                 
   ),
   [_QWERTY_CAPS] = LAYOUT(
     KC_TRANS, LSFT(KC_Q), LSFT(KC_W), LSFT(KC_E), LSFT(KC_R), LSFT(KC_T),                                           LSFT(KC_Y), LSFT(KC_U), LSFT(KC_I), LSFT(KC_O), LSFT(KC_P), KC_TRANS, 
@@ -152,6 +155,7 @@ layer_state_t layer_state_set_user(layer_state_t state) { return update_tri_laye
 bool is_oneshot_modifier_cancel_key(uint16_t keycode) {
     switch (keycode) {
         case LA_NAV:
+        case LA_SYM:
             return true;
         default:
             return false;
@@ -193,46 +197,59 @@ bool smart_feature_cancel_key(uint16_t keycode, keyrecord_t* recor) {
     return false;
 }
 
-int8_t la_nav_taps = 0;
-int8_t la_sym_taps = 0;
+int8_t la_nav_pressed = 0;
+int8_t la_sym_pressed = 0;
+int8_t la_nav_pressed_released = 0;
+int8_t la_sym_pressed_released = 0;
 
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     process_record_oled(keycode, record);
 
+    uint8_t const layer = default_layer_state + 1;  // Warning: QWERTY and RSTHD and their CAPSLOCK layers have a dependency
+
     switch (keycode) {
         case LA_NAV:
             if (record->event.pressed) {
-                la_nav_taps += 1;
+                la_nav_pressed = 1;
+                la_nav_pressed_released = 0;
             } else {
-                la_nav_taps += 1;                
+                if (la_nav_pressed == 1)
+                    la_nav_pressed_released = 1;
+                la_nav_pressed = 0;
             }
             break;
         case LA_SYM:
             if (record->event.pressed) {
-                la_sym_taps += 1;
+                la_sym_pressed = 1;
+                la_sym_pressed_released = 0;
             } else {
-                la_sym_taps += 1;
+                if (la_sym_pressed == 1)
+                    la_sym_pressed_released = 1;
+                la_sym_pressed = 0;
             }
             break;
         default:
-            // Reset double tap detection
-            la_nav_taps = 0;
-            la_sym_taps = 0;
+            la_nav_pressed = 0;
+            la_sym_pressed = 0;
+            la_nav_pressed_released = 0;
+            la_sym_pressed_released = 0;
             break;
     }
 
-    uint8_t const layer = default_layer_state + 1;  // Warning: QWERTY and RSTHD and their CAPSLOCK layers have a dependency
-    
-    // Still have a free trigger to use for something
-    // if (la_nav_taps == 2 && la_sym_taps == 2) {
-    //     // some other layer can be activated
-    // }
-
-    if (la_nav_taps >= 4 && ((la_nav_taps & 1) == 0)) {
-        smart_feature_toggle(SMART_CAPSLOCK, layer);
+    if (la_nav_pressed == 1 && la_sym_pressed == 1) {
+        la_nav_pressed_released = 0;
+        la_sym_pressed_released = 0;
+        la_nav_pressed = 0;
+        la_sym_pressed = 0;
     }
-    if (la_sym_taps >= 4 && ((la_sym_taps & 1) == 0)) {
+
+    if (la_nav_pressed_released == 1) {
+        smart_feature_toggle(SMART_CAPSLOCK, layer);
+        la_nav_pressed_released = 0;
+    }
+    if (la_sym_pressed_released == 1) {
         smart_feature_toggle(SMART_NUMBERS, _NUM);
+        la_sym_pressed_released = 0;
     }
 
     switch (keycode) {
@@ -267,7 +284,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
 
     int8_t keycode_consumed = 0;
 
-    if ((smart_feature_cancel_key(keycode, record)) || (keycode < QK_MODS_MAX && !IS_MOD(keycode))) {
+    if (keycode < QK_MODS_MAX && !IS_MOD(keycode)) {
         if (smart_feature_state(SMART_CAPSLOCK)) {
             keycode_consumed = 1;
             smart_capslock_process(keycode, record);
