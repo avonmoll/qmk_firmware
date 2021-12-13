@@ -155,6 +155,7 @@ layer_state_t layer_state_set_user(layer_state_t state) { return update_tri_laye
 bool is_oneshot_modifier_cancel_key(uint16_t keycode) {
     switch (keycode) {
         case LA_NAV:
+        case LA_SYM:
             return true;
         default:
             return false;
@@ -196,8 +197,10 @@ bool smart_feature_cancel_key(uint16_t keycode, keyrecord_t* recor) {
     return false;
 }
 
-int8_t la_nav_taps = 0;
-int8_t la_sym_taps = 0;
+int8_t la_nav_pressed = 0;
+int8_t la_sym_pressed = 0;
+int8_t la_nav_pressed_released = 0;
+int8_t la_sym_pressed_released = 0;
 
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     process_record_oled(keycode, record);
@@ -207,32 +210,40 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     switch (keycode) {
         case LA_NAV:
             if (record->event.pressed) {
-                la_nav_taps = 1;
-                if (la_sym_taps == 1) {
-                    smart_feature_enable(SMART_CAPSLOCK, layer);
-                } else {
-                    smart_feature_disable(SMART_NUMBERS);
-                }
-            } else  {
-                la_nav_taps = 0;
+                la_nav_pressed = 1;
+                la_nav_pressed_released = 0;
+            } else {
+                if (la_nav_pressed == 1)
+                    la_nav_pressed_released = 1;
+                la_nav_pressed = 0;
             }
             break;
         case LA_SYM:
             if (record->event.pressed) {
-                la_sym_taps = 1;
-                if (la_nav_taps == 1) {
-                    smart_feature_enable(SMART_NUMBERS, _NUM);
-                } else {
-                    smart_feature_disable(SMART_CAPSLOCK);
-                }
-            } else  {
-                la_sym_taps = 0;
+                la_sym_pressed = 1;
+                la_sym_pressed_released = 0;
+            } else {
+                if (la_sym_pressed == 1)
+                    la_sym_pressed_released = 1;
+                la_sym_pressed = 0;
             }
             break;
         default:
-            la_nav_taps = 0;
-            la_sym_taps = 0;
+            la_nav_pressed = 0;
+            la_sym_pressed = 0;
+            la_nav_pressed_released = 0;
+            la_sym_pressed_released = 0;
             break;
+    }
+
+
+    if (la_nav_pressed_released == 1) {
+        smart_feature_toggle(SMART_CAPSLOCK, layer);
+        la_nav_pressed_released = 0;
+    }
+    if (la_sym_pressed_released == 1) {
+        smart_feature_toggle(SMART_NUMBERS, _NUM);
+        la_sym_pressed_released = 0;
     }
 
     switch (keycode) {
@@ -267,7 +278,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
 
     int8_t keycode_consumed = 0;
 
-    if ((smart_feature_cancel_key(keycode, record)) || (keycode < QK_MODS_MAX && !IS_MOD(keycode))) {
+    if (keycode < QK_MODS_MAX && !IS_MOD(keycode)) {
         if (smart_feature_state(SMART_CAPSLOCK)) {
             keycode_consumed = 1;
             smart_capslock_process(keycode, record);
