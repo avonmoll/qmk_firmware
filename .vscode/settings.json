@@ -22,5 +22,12 @@
     "[markdown]": {
         "editor.trimAutoWhitespace": false,
         "files.trimTrailingWhitespace": false
-    }
+    },
+    "customLocalFormatters.formatters": [
+        {
+          "description": "keymap formatter",
+          "command": "go-qmk-keymap",
+          "languages": ["c"]
+        }
+    ]
 }
