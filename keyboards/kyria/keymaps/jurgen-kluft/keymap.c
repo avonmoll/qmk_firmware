@@ -156,6 +156,8 @@ bool is_oneshot_modifier_cancel_key(uint16_t keycode) {
     switch (keycode) {
         case LA_NAV:
         case LA_SYM:
+        case LA_NUM:
+        case LA_QCAPS:
         case KC_SMART_NUMBER:
         case KC_SMART_CAPSLOCK:
             return true;
@@ -193,6 +195,8 @@ bool smart_feature_cancel_key(uint16_t keycode, keyrecord_t* recor) {
     switch (keycode) {
         case LA_SYM:
         case LA_NAV:
+        case LA_NUM:
+        case LA_QCAPS:
             return true;
     }
     return false;
