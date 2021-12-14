@@ -156,6 +156,8 @@ bool is_oneshot_modifier_cancel_key(uint16_t keycode) {
     switch (keycode) {
         case LA_NAV:
         case LA_SYM:
+        case KC_SMART_NUMBER:
+        case KC_SMART_CAPSLOCK:
             return true;
         default:
             return false;
@@ -166,7 +168,6 @@ bool is_oneshot_modifier_ignored_key(uint16_t keycode) {
     switch (keycode) {
         case LA_SYM:
         case LA_NAV:
-        case KC_SMART_NUMBER:
             return true;
     }
     return false;
@@ -243,15 +244,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         la_sym_pressed = 0;
     }
 
-    if (la_nav_pressed_released == 1) {
-        smart_feature_toggle(SMART_CAPSLOCK, layer);
-        la_nav_pressed_released = 0;
-    }
-    if (la_sym_pressed_released == 1) {
-        smart_feature_toggle(SMART_NUMBERS, _NUM);
-        la_sym_pressed_released = 0;
-    }
-
     switch (keycode) {
         case KC_PASSWORD:
             if (record->event.pressed) {
@@ -298,6 +290,23 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
 #ifdef ENABLE_ONESHOT
     keycode_consumed += update_oneshot_modifiers(keycode, record, keycode_consumed);
 #endif
+
+    // If NAV or SYM was pressed we should not toggle a smart feature
+    if (keycode_consumed == 0) {
+        if (la_nav_pressed_released == 1) {
+            smart_feature_toggle(SMART_CAPSLOCK, layer);
+            la_nav_pressed_released = 0;
+        }
+        if (la_sym_pressed_released == 1) {
+            smart_feature_toggle(SMART_NUMBERS, _NUM);
+            la_sym_pressed_released = 0;
+        }
+    } else {       
+        la_nav_pressed = 0;
+        la_sym_pressed = 0;
+        la_nav_pressed_released = 0;
+        la_sym_pressed_released = 0;
+    }
 
     switch (keycode) {
         case KC_QWERTY:
