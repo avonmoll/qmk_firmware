@@ -18,11 +18,11 @@ SPACE_CADET_ENABLE = no
 KEY_OVERRIDE_ENABLE = no
 
 UNICODE_ENABLE                  = yes
-WPM_ENABLE                      = yes
+WPM_ENABLE                      = no
 
 ENCODER_ENABLE                  = yes  	# Ensure encoders are disabled unless set to true in a specific keymap
 
-OLED_DRIVER_ENABLE              = yes   # Enables the use of OLED displays
+OLED_DRIVER_ENABLE              = no   # Enables the use of OLED displays
 RGBLIGHT_ENABLE                 = no   # Enable keyboard RGB underglow
 
 SRC += oled.c

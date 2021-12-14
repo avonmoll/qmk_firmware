@@ -155,7 +155,6 @@ layer_state_t layer_state_set_user(layer_state_t state) { return update_tri_laye
 bool is_oneshot_modifier_cancel_key(uint16_t keycode) {
     switch (keycode) {
         case LA_NAV:
-        case LA_SYM:
         case LA_NUM:
         case LA_QCAPS:
         case KC_SMART_NUMBER:
