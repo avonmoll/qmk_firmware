@@ -214,6 +214,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     switch (keycode) {
         case LA_NAV:
             if (record->event.pressed) {
+                smart_feature_disable_all();
                 la_nav_pressed = 1;
                 la_nav_pressed_released = 0;
             } else {
@@ -224,6 +225,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             break;
         case LA_SYM:
             if (record->event.pressed) {
+                smart_feature_disable_all();
                 la_sym_pressed = 1;
                 la_sym_pressed_released = 0;
             } else {
