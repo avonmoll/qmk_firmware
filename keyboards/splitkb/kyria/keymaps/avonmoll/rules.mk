@@ -3,6 +3,10 @@ OLED_DRIVER = SSD1306   # Enables the use of OLED displays
 ENCODER_ENABLE = yes       # Enables the use of one or more encoders
 RGBLIGHT_ENABLE = yes      # Enable keyboard RGB underglow
 
+KEY_OVERRIDE_ENABLE = yes
+UNICODE_ENABLE      = yes
+
+LTO_ENABLE = yes
 
 # Disable unused features
 VIA_ENABLE = no
@@ -23,8 +27,11 @@ SWAP_HANDS_ENABLE = no
 RGB_MATRIX_ENABLE = no
 SPACE_CADET_ENABLE = no
 WPM_ENABLE = no
+POINTING_DEVICE_ENABLE = no
 
-KEY_OVERRIDE_ENABLE = yes
-UNICODE_ENABLE      = yes
+# EXTRAKEY_ENABLE = no
+MOUSEKEY_ENABLE = no
+MAGIC_ENABLE = no
+GRAVE_ESC_ENABLE = no
 
 SRC += oneshot.c

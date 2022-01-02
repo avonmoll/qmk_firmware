@@ -27,7 +27,7 @@
 #endif
 
 // Lets you roll mod-tap keys
-#define IGNORE_MOD_TAP_INTERRUPT
+// #define IGNORE_MOD_TAP_INTERRUPT
 
 // If you are using an Elite C rev3 on the slave side, uncomment the lines below:
 // #define SPLIT_USB_DETECT
@@ -40,3 +40,24 @@
 // Needed because encoders are skipping every other actuation
 // see https://docs.splitkb.com/hc/en-us/articles/360011068659-My-encoder-is-skipping-actions-when-turning-it
 #define ENCODER_RESOLUTION 2
+
+// Needed to reduce firmware size
+#undef LOCKING_SUPPORT_ENABLE
+#undef LOCKING_RESYNC_ENABLE
+//#define NO_ACTION_TAPPING // this actually nullifies MO layers
+#define NO_MUSIC_MODE
+#define LAYER_STATE_8BIT
+#undef RGBLIGHT_ANIMATIONS
+#undef RGBLIGHT_EFFECT_BREATHING
+#undef RGBLIGHT_EFFECT_RAINBOW_MOOD
+#undef RGBLIGHT_EFFECT_RAINBOW_SWIRL
+#undef RGBLIGHT_EFFECT_SNAKE
+#undef RGBLIGHT_EFFECT_KNIGHT
+#undef RGBLIGHT_EFFECT_CHRISTMAS
+#undef RGBLIGHT_EFFECT_STATIC_GRADIENT
+#undef RGBLIGHT_EFFECT_RGB_TEST
+#undef RGBLIGHT_EFFECT_ALTERNATING
+#undef RGBLIGHT_EFFECT_TWINKLE
+
+// Default unicode input mode set to Linux
+#define UNICODE_SELECTED_MODES UC_LNX

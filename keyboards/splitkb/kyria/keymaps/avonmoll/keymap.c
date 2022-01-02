@@ -14,11 +14,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include QMK_KEYBOARD_H
+#include "oneshot.h"
 
 /*
 DONE: Implement closing ), ], }
 DONE: Implement Greek layer (unicode)
-TODO: Make a button for switching between Linux and Mac for cut, copy, paste, etc.
+DONE: Make a button for switching between Linux and Mac for cut, copy, paste, etc.
 */
 
 enum layers {
@@ -44,22 +45,15 @@ enum layers {
 #define GREEK    OSL(_GREEK)
 #define SGREEK   OSL(_SGREEK)
 
-#define CTL_ESC  MT(MOD_LCTL, KC_ESC)
-#define CTL_QUOT MT(MOD_RCTL, KC_QUOTE)
-#define CTL_MINS MT(MOD_RCTL, KC_MINUS)
-#define ALT_ENT  MT(MOD_LALT, KC_ENT)
 #define PLY_PAUS KC_MEDIA_PLAY_PAUSE
-// #define W_BSP  C(KC_BSPC)
-// #define UNDO  C(KC_Z)
-// #define CUT   C(KC_X)
-// #define COPY  C(KC_C)
-// #define PASTE C(KC_V)
 
 enum custom_keycodes {
 	OS_GUI = SAFE_RANGE,
 	OS_SHF,
 	OS_CTL,
 	OS_ALT,
+	TABL,
+	TABR,
 	W_BSP,
 	TOG_MAC,
 	UNDO,
@@ -76,7 +70,7 @@ enum custom_keycodes {
 	UC_EPSI,  // ϵ
 	UC_VEPS,  // ε
 	UC_ZETA,  // ζ
-	UC_ETA,  // η
+	UC_ETA,   // η
 	UC_THET,  // θ
 	UC_CTHE,  // Θ
 	UC_KAPP,  // κ
@@ -113,49 +107,49 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * Base Layer: Colemak DH
  *
  * ,-------------------------------------------.                              ,-------------------------------------------.
- * |  `  ~  |   Q  |   W  |   F  |   P  |   B  |                              |   J  |   L  |   U  |   Y  | ;  : |  -  _  |
+ * |  `  ~  |   Q  |   W  |   F  |   P  |   B  |                              |   J  |   L  |   U  |   Y  | ;  : |   :    |
  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
- * | CapsLk |   A  |   R  |   S  |   T  |   G  |                              |   M  |   N  |   E  |   I  |   O  |  =  +  |
+ * |   <    |   A  |   R  |   S  |   T  |   G  |                              |   M  |   N  |   E  |   I  |   O  |   >    |
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
- * | Adjust |   Z  |   X  |   C  |   D  |   V  | Esc  |F-keys|  |GREEK | ABSpc|   K  |   H  | ,  < | . >  | /  ? |  '  "  |
+ * | CapsLk |   Z  |   X  |   C  |   D  |   V  | Esc  |F-keys|  |GREEK | WBSpc|   K  |   H  | ,  < | . >  | /  ? |   ?    |
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
  *                        |Play/ | HYP  | Nav  | Space| Tab  |  | ENTR | BSpc | Sym  | HYP  | Menu |
  *                        |Pause |      |      |      |      |  |      |      |      |      |      |
  *                        `----------------------------------'  `----------------------------------'
  */
     [_COLEMAK_DH] = LAYOUT(
-     KC_GRV  , KC_Q ,  KC_W   ,  KC_F  ,   KC_P ,   KC_B,                                        KC_J,   KC_L ,  KC_U ,   KC_Y ,KC_SCLN, KC_MINS,
-     KC_CAPS , KC_A ,  KC_R   ,  KC_S  ,   KC_T ,   KC_G,                                        KC_M,   KC_N ,  KC_E ,   KC_I ,  KC_O , KC_EQL,
-     ADJUST  , KC_Z ,  KC_X   ,  KC_C  ,   KC_D ,   KC_V, KC_ESC, FKEYS  ,     GREEK  , W_BSP, KC_K,   KC_H ,KC_COMM, KC_DOT ,KC_SLSH, KC_QUOT,
-                                 PLY_PAUS, KC_HYPR, NAV , KC_SPC , NAV   ,     KC_ENT , KC_BSPC, SYM,    KC_HYPR, KC_APP
+     KC_GRV  , KC_Q ,  KC_W   ,  KC_F  ,   KC_P ,   KC_B,                                        KC_J,   KC_L ,  KC_U ,   KC_Y ,KC_SCLN, KC_COLN,
+     KC_LT   , KC_A ,  KC_R   ,  KC_S  ,   KC_T ,   KC_G,                                        KC_M,   KC_N ,  KC_E ,   KC_I ,  KC_O , KC_GT  ,
+     KC_CAPS , KC_Z ,  KC_X   ,  KC_C  ,   KC_D ,   KC_V, KC_ESC, FKEYS  ,     GREEK  , W_BSP  , KC_K,   KC_H ,KC_COMM, KC_DOT ,KC_SLSH, KC_QUES,
+                                KC_MPLY, KC_HYPR,   NAV , KC_SPC , KC_TAB,     KC_ENT , KC_BSPC, SYM , KC_HYPR, KC_APP
     ),
 
 /*
  * Base Layer: QWERTY
  *
  * ,-------------------------------------------.                              ,-------------------------------------------.
- * |  `  ~  |   Q  |   W  |   E  |   R  |   T  |                              |   Y  |   U  |   I  |   O  |   P  |  -  _  |
+ * |  `  ~  |   Q  |   W  |   E  |   R  |   T  |                              |   Y  |   U  |   I  |   O  |   P  |   :    |
  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
- * | CapsLk |   A  |   S  |   D  |   F  |   G  |                              |   H  |   J  |   K  |   L  | ;  : |  =  +  |
+ * |   <    |   A  |   S  |   D  |   F  |   G  |                              |   H  |   J  |   K  |   L  | ;  : |   >    |
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
- * | Adjust |   Z  |   X  |   C  |   V  |   B  | Esc  |F-keys|  |GREEK | ABSpc|   N  |   M  | ,  < | . >  | /  ? |  '  "  |
+ * | CapsLk |   Z  |   X  |   C  |   V  |   B  | Esc  |F-keys|  |GREEK | WBSpc|   N  |   M  | ,  < | . >  | /  ? |   ?    |
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
  *                        |Play/ | HYP  | Nav  | Space| Tab  |  | ENTR | BSpc | Sym  | HYP  | Menu |
  *                        |Pause |      |      |      |      |  |      |      |      |      |      |
  *                        `----------------------------------'  `----------------------------------'
  */
     [_QWERTY] = LAYOUT(
-     KC_GRV  , KC_Q ,  KC_W   ,  KC_E  ,   KC_R ,   KC_T,                                        KC_Y,   KC_U ,  KC_I ,   KC_O , KC_P,    KC_MINS,
-     KC_CAPS , KC_A ,  KC_S   ,  KC_D  ,   KC_F ,   KC_G,                                        KC_H,   KC_J ,  KC_K ,   KC_L , KC_SCLN, KC_EQL,
-     ADJUST  , KC_Z ,  KC_X   ,  KC_C  ,   KC_V ,   KC_B, KC_ESC, FKEYS  ,     GREEK  , W_BSP, KC_N,   KC_M ,KC_COMM, KC_DOT , KC_SLSH, KC_QUOT,
-                                 PLY_PAUS, KC_HYPR, NAV , KC_SPC , NAV   ,     KC_ENT , KC_BSPC, SYM,    KC_HYPR, KC_APP
+     KC_GRV  , KC_Q ,  KC_W   ,  KC_E  ,   KC_R ,   KC_T,                                        KC_Y,   KC_U ,  KC_I ,   KC_O , KC_P,    KC_COLN,
+     KC_LT   , KC_A ,  KC_S   ,  KC_D  ,   KC_F ,   KC_G,                                        KC_H,   KC_J ,  KC_K ,   KC_L , KC_SCLN, KC_GT  ,
+     KC_CAPS , KC_Z ,  KC_X   ,  KC_C  ,   KC_V ,   KC_B, KC_ESC, FKEYS  ,     GREEK  , W_BSP  , KC_N,   KC_M ,KC_COMM, KC_DOT , KC_SLSH, KC_QUES,
+                                KC_MPLY, KC_HYPR, NAV , KC_SPC , KC_TAB,     KC_ENT , KC_BSPC  , SYM,    KC_HYPR, KC_APP
     ),
 
 /*
  * Nav Layer: Media, navigation
  *
  * ,-------------------------------------------.                              ,-------------------------------------------.
- * |        |      |      |      |      |      |                              | PgUp | Home |   ↑  | End  | VolUp| Delete |
+ * |        |      |      | TABL | TABR |      |                              | PgUp | Home |   ↑  | End  | VolUp| Delete |
  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
  * |        |  Alt |  Ctl | Shift| GUI  |      |                              | PgDn |  ←   |   ↓  |   →  | VolDn| Insert |
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
@@ -166,9 +160,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                        `----------------------------------'  `----------------------------------'
  */
     [_NAV] = LAYOUT(
-      _______, _______, _______, _______, _______ , _______,                                     KC_PGUP, KC_HOME, KC_UP,   KC_END,  KC_VOLU, KC_DEL,
-      _______, OS_ALT , OS_CTL , OS_SHF , OS_GUI  , _______,                                     KC_PGDN, KC_LEFT, KC_DOWN, KC_RGHT, KC_VOLD, KC_INS,
-      _______, UNDO, CUT , COPY, PASTE, _______, _______, KC_SLCK, _______, _______,KC_PAUSE, KC_MPRV, KC_MPLY, KC_MNXT, KC_MUTE, KC_PSCR,
+      _______, _______, _______,   TABL ,   TABR  , _______,                                     KC_PGUP, KC_HOME, KC_UP,   KC_END,  KC_VOLU, KC_DEL,
+      _______, OS_ALT , OS_CTL , OS_SHF ,  OS_GUI , _______,                                     KC_PGDN, KC_LEFT, KC_DOWN, KC_RGHT, KC_VOLD, KC_INS,
+      _______,   UNDO ,    CUT ,    COPY,    PASTE, _______, KC_SLCK, _______, _______, _______,KC_PAUSE, KC_MPRV, KC_MPLY, KC_MNXT, KC_MUTE, KC_PSCR,
                                  _______, _______ , _______, _______, _______, _______, _______, _______, _______, _______
     ),
 
@@ -197,11 +191,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * Function Layer: Function keys
  *
  * ,-------------------------------------------.                              ,-------------------------------------------.
- * |        |      |      |      |      |      |                              |      |      |      |      |      |        |
+ * |        |      |      |      |      |      |                              |      |  F1  |  F2  |  F3  |  F4  |        |
  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
- * |        |      |      |      |      |      |                              |      |      |      |      |      |        |
+ * |        |      |      |      |      |      |                              |      |  F5  |  F6  |  F7  |  F8  |        |
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
- * |        |      |      |      |      |      |      |      |  |      |      |      |      |      |      |      |        |
+ * |        |      |      |      |      |      |      |      |  |      |      |      |  F9  |  F10 |  F11 |  F12 |        |
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
  *                        |      |      |      |      |      |  |      |      |      |      |      |
  *                        |      |      |      |      |      |  |      |      |      |      |      |
@@ -220,7 +214,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,-------------------------------------------.                              ,-------------------------------------------.
  * |        |      |      |QWERTY|      |      |                              |      |      |      |      |      |        |
  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
- * |        |      |      |      |      |      |                              | TOG  | SAI  | HUI  | VAI  | MOD  |        |
+ * |        |      |      |      | MAC  |      |                              | TOG  | SAI  | HUI  | VAI  | MOD  |        |
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
  * |        |      |      |Colmak|      |      |      |      |  |      |      |      | SAD  | HUD  | VAD  | RMOD |        |
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
@@ -229,12 +223,54 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                        `----------------------------------'  `----------------------------------'
  */
     [_ADJUST] = LAYOUT(
-      _______, _______, _______, QWERTY , _______, _______,                                    _______, _______, _______, _______,  _______, _______,
-      _______, _______, _______, _______, TOG_MAC, _______,                                    RGB_TOG, RGB_SAI, RGB_HUI, RGB_VAI,  RGB_MOD, _______,
+      _______, _______, _______, QWERTY , _______, UC_M_LN,                                    _______, _______, _______, _______,  _______, _______,
+      _______, _______, _______, _______, TOG_MAC, UC_M_MA,                                    RGB_TOG, RGB_SAI, RGB_HUI, RGB_VAI,  RGB_MOD, _______,
       _______, _______, _______, COLEMAK, _______, _______,_______, _______, _______, _______, _______, RGB_SAD, RGB_HUD, RGB_VAD, RGB_RMOD, _______,
                                  _______, _______, _______,_______, _______, _______, _______, _______, _______, _______
     ),
 
+/*
+ * Greek layer: Send Greek letters via send_unicode_string
+ *
+ * ,-------------------------------------------.                              ,-------------------------------------------.
+ * |        | SHRG |  ω   |  ϕ   |  π   |  β   |                              |  η   |  λ   |  υ   |  ψ   |      |        |
+ * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
+ * |        |  α   |  ρ   |  σ   |  τ   |  γ   |                              |  μ   |  ν   |  ϵ   |      |      |        |
+ * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
+ * |        |  ζ   |  χ   |  ξ   |  δ   |  ε   |      |      |  |SGREEK|      |  κ   |  θ   |      |      |      |        |
+ * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
+ *                        |      |      |      |      |      |  |      |      |      |      |      |
+ *                        |      |      |      |      |      |  |      |      |      |      |      |
+ *                        `----------------------------------'  `----------------------------------'
+ */
+    [_GREEK] = LAYOUT(
+      _______, UC_SHRG, UC_OMEG, UC_PHI , UC_PI  , UC_BETA,                                     UC_ETA , UC_LAMB, UC_UPSI, UC_PSI , _______, _______,
+      _______, UC_ALPH, UC_RHO , UC_SIGM, UC_TAU , UC_GAMM,                                     UC_MU  , UC_NU  , UC_EPSI, _______, _______, _______,
+      _______, UC_ZETA, UC_CHI , UC_XI  , UC_DELT, UC_VEPS, _______, _______, SGREEK , _______, UC_KAPP, UC_THET, _______, _______, _______, _______,
+                                 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
+    ),
+
+/*
+ * Shifted Greek layer: Send capital Greek letters via send_unicode_string
+ *
+ * ,-------------------------------------------.                              ,-------------------------------------------.
+ * |        |      |  Ω   |  Φ   |  Π   |      |                              |      |  Λ   |  Υ   |  Ψ   |      |        |
+ * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
+ * |        |      |      |  Σ   |      |  Γ   |                              |      |      |      |      |      |        |
+ * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
+ * |        |      |      |  Ξ   |  Δ   |      |      |      |  |      |      |      |  Θ   |      |      |      |        |
+ * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
+ *                        |      |      |      |      |      |  |      |      |      |      |      |
+ *                        |      |      |      |      |      |  |      |      |      |      |      |
+ *                        `----------------------------------'  `----------------------------------'
+ */
+    [_SGREEK] = LAYOUT(
+      _______, _______, UC_COME, UC_CPHI, UC_CPI , _______,                                     _______, UC_CLAM, UC_CUPS, UC_CPSI, _______, _______,
+      _______, _______, _______, UC_CSIG, _______, UC_CGAM,                                     _______, _______, _______, _______, _______, _______,
+      _______, _______, _______, UC_CXI , UC_CDEL, _______, _______, _______, _______, _______, _______, UC_CTHE, _______, _______, _______, _______,
+                                 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
+    ),
+	
 // /*
 //  * Layer template
 //  *
@@ -313,8 +349,6 @@ oneshot_mod get_modifier_for_trigger_key(uint16_t keycode) {
 bool is_macos = false;
 
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
-    uint8_t const layer = default_layer_state + 1;  // Warning: QWERTY and RSTHD and their CAPSLOCK layers have a dependency
-
     int8_t keycode_consumed = 0;
 
 #ifdef ENABLE_ONESHOT
@@ -327,39 +361,98 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
 				is_macos = !is_macos;
             }
             break;
+		case TABL:
+			if (record->event.pressed) {
+				if(is_macos) {
+					register_code(KC_LGUI);
+					register_code(KC_LSFT);
+					tap_code(KC_TAB);
+					unregister_code(KC_LGUI);
+					unregister_code(KC_LSFT);
+				} else {
+					register_code(KC_LCTL);
+					register_code(KC_LSFT);
+					tap_code(KC_TAB);
+					unregister_code(KC_LCTL);
+					unregister_code(KC_LSFT);
+				}
+			}
+			break;
+		case TABR:
+			if (record->event.pressed) {
+				if(is_macos) {
+					register_code(KC_LGUI);
+					tap_code(KC_TAB);
+					unregister_code(KC_LGUI);
+				} else {
+					register_code(KC_LCTL);
+					tap_code(KC_TAB);
+					unregister_code(KC_LCTL);
+				}
+			}
+			break;
+		case W_BSP:
+			if (record->event.pressed) {
+				if(is_macos) {
+					register_code(KC_LALT);
+					tap_code(KC_BSPC);
+					unregister_code(KC_LALT);
+				} else {
+					register_code(KC_LCTL);
+					tap_code(KC_BSPC);
+					unregister_code(KC_LCTL);
+				}
+			}
+			break;
 		case UNDO:
 			if (record->event.pressed) {
 				if (is_macos) {
-					tap_code(G(KC_Z))
+					register_code(KC_LGUI);
+					tap_code(KC_Z);
+					unregister_code(KC_LGUI);
 				} else {
-					// TODO: send Ctrl+Z
+					register_code(KC_LCTL);
+					tap_code(KC_Z);
+					unregister_code(KC_LCTL);
 				}
 			}
 			break;
 		case CUT:
 			if (record->event.pressed) {
 				if (is_macos) {
-					// TODO: send Cmd+Z
+					register_code(KC_LGUI);
+					tap_code(KC_X);
+					unregister_code(KC_LGUI);
 				} else {
-					// TODO: send Ctrl+Z
+					register_code(KC_LCTL);
+					tap_code(KC_X);
+					unregister_code(KC_LCTL);
 				}
 			}
 			break;
 		case COPY:
 			if (record->event.pressed) {
 				if (is_macos) {
-					// TODO: send Cmd+Z
+					register_code(KC_LGUI);
+					tap_code(KC_C);
+					unregister_code(KC_LGUI);
 				} else {
-					// TODO: send Ctrl+Z
+					register_code(KC_LCTL);
+					tap_code(KC_C);
+					unregister_code(KC_LCTL);
 				}
 			}
 			break;
 		case PASTE:
 			if (record->event.pressed) {
 				if (is_macos) {
-					// TODO: send Cmd+Z
+					register_code(KC_LGUI);
+					tap_code(KC_V);
+					unregister_code(KC_LGUI);
 				} else {
-					// TODO: send Ctrl+Z
+					register_code(KC_LCTL);
+					tap_code(KC_V);
+					unregister_code(KC_LCTL);
 				}
 			}
 			break;
@@ -564,7 +657,7 @@ bool oled_task_user(void) {
         // clang-format on
 
         oled_write_P(qmk_logo, false);
-        oled_write_P(PSTR("Kyria rev1.0\n\n"), false);
+        oled_write_P(PSTR("Kyria rev1.4\n\n"), false);
 
         // Host Keyboard Layer Status
         oled_write_P(PSTR("Layer: "), false);
@@ -589,6 +682,9 @@ bool oled_task_user(void) {
                 break;
             case _GREEK:
                 oled_write_P(PSTR("Greek\n"), false);
+                break;
+            case _SGREEK:
+                oled_write_P(PSTR("Capital Greek\n"), false);
                 break;
             default:
                 oled_write_P(PSTR("Undefined\n"), false);
