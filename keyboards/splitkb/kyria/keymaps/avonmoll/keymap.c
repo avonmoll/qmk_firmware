@@ -15,6 +15,7 @@
  */
 #include QMK_KEYBOARD_H
 #include "oneshot.h"
+#include "swapper.h"
 
 /*
 DONE: Implement closing ), ], }
@@ -46,15 +47,16 @@ enum layers {
 #define SGREEK   OSL(_SGREEK)
 
 #define PLY_PAUS KC_MEDIA_PLAY_PAUSE
+#define TABR	C(KC_TAB)
+#define TABL	C(S(KC_TAB))
+#define W_BSP	C(KC_BSPC)
 
 enum custom_keycodes {
 	OS_GUI = SAFE_RANGE,
 	OS_SHF,
 	OS_CTL,
 	OS_ALT,
-	TABL,
-	TABR,
-	W_BSP,
+	SW_WIN,
 	TOG_MAC,
 	UNDO,
 	CUT,
@@ -149,7 +151,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * Nav Layer: Media, navigation
  *
  * ,-------------------------------------------.                              ,-------------------------------------------.
- * |        |      |      | TABL | TABR |      |                              | PgUp | Home |   ↑  | End  | VolUp| Delete |
+ * |        |      | SWIN | TABL | TABR |      |                              | PgUp | Home |   ↑  | End  | VolUp| Delete |
  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
  * |        |  Alt |  Ctl | Shift| GUI  |      |                              | PgDn |  ←   |   ↓  |   →  | VolDn| Insert |
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
@@ -160,7 +162,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                        `----------------------------------'  `----------------------------------'
  */
     [_NAV] = LAYOUT(
-      _______, _______, _______,   TABL ,   TABR  , _______,                                     KC_PGUP, KC_HOME, KC_UP,   KC_END,  KC_VOLU, KC_DEL,
+      _______, _______, SW_WIN ,   TABL ,   TABR  , _______,                                     KC_PGUP, KC_HOME, KC_UP,   KC_END,  KC_VOLU, KC_DEL,
       _______, OS_ALT , OS_CTL , OS_SHF ,  OS_GUI , _______,                                     KC_PGDN, KC_LEFT, KC_DOWN, KC_RGHT, KC_VOLD, KC_INS,
       _______,   UNDO ,    CUT ,    COPY,    PASTE, _______, KC_SLCK, _______, _______, _______,KC_PAUSE, KC_MPRV, KC_MPLY, KC_MNXT, KC_MUTE, KC_PSCR,
                                  _______, _______ , _______, _______, _______, _______, _______, _______, _______, _______
@@ -183,7 +185,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_SYM] = LAYOUT(
      _______ ,   KC_7 ,   KC_5 ,   KC_3 ,   KC_1 ,   KC_9 ,                                       KC_8 ,   KC_0 ,   KC_2 ,   KC_4 ,   KC_6 , _______,
      _______ , KC_QUOT, KC_LCBR, KC_LBRC, KC_LPRN, KC_EQL ,                                     _______, OS_GUI , OS_SHF , OS_CTL , OS_ALT , _______,
-     _______ , KC_AMPR, KC_COLN, KC_HASH, KC_EXLM, KC_MINS, _______, _______, _______, _______, KC_ASTR, KC_BSLS, KC_AT  ,  KC_DLR, KC_CIRC, _______,
+     _______ , KC_AMPR, KC_PERC, KC_HASH, KC_EXLM, KC_MINS, _______, _______, _______, _______, KC_ASTR, KC_BSLS, KC_AT  ,  KC_DLR, KC_CIRC, _______,
                                  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
     ),
 
@@ -347,6 +349,7 @@ oneshot_mod get_modifier_for_trigger_key(uint16_t keycode) {
 #endif
 
 bool is_macos = false;
+bool sw_win_active = false;
 
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     int8_t keycode_consumed = 0;
@@ -355,55 +358,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     keycode_consumed += update_oneshot_modifiers(keycode, record, keycode_consumed);
 #endif
 
+	update_swapper(
+			&sw_win_active, KC_LGUI, KC_TAB, SW_WIN,
+			keycode, record
+	);
+
     switch (keycode) {
         case TOG_MAC:
             if (record->event.pressed) {
 				is_macos = !is_macos;
             }
             break;
-		case TABL:
-			if (record->event.pressed) {
-				if(is_macos) {
-					register_code(KC_LGUI);
-					register_code(KC_LSFT);
-					tap_code(KC_TAB);
-					unregister_code(KC_LGUI);
-					unregister_code(KC_LSFT);
-				} else {
-					register_code(KC_LCTL);
-					register_code(KC_LSFT);
-					tap_code(KC_TAB);
-					unregister_code(KC_LCTL);
-					unregister_code(KC_LSFT);
-				}
-			}
-			break;
-		case TABR:
-			if (record->event.pressed) {
-				if(is_macos) {
-					register_code(KC_LGUI);
-					tap_code(KC_TAB);
-					unregister_code(KC_LGUI);
-				} else {
-					register_code(KC_LCTL);
-					tap_code(KC_TAB);
-					unregister_code(KC_LCTL);
-				}
-			}
-			break;
-		case W_BSP:
-			if (record->event.pressed) {
-				if(is_macos) {
-					register_code(KC_LALT);
-					tap_code(KC_BSPC);
-					unregister_code(KC_LALT);
-				} else {
-					register_code(KC_LCTL);
-					tap_code(KC_BSPC);
-					unregister_code(KC_LCTL);
-				}
-			}
-			break;
 		case UNDO:
 			if (record->event.pressed) {
 				if (is_macos) {

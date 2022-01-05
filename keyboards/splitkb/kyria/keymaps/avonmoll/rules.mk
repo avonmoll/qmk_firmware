@@ -35,3 +35,4 @@ MAGIC_ENABLE = no
 GRAVE_ESC_ENABLE = no
 
 SRC += oneshot.c
+SRC += swapper.c
